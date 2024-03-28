@@ -1,0 +1,9 @@
+{{ define "content" }} {{ template "createTweet" }}
+<h2 class="text-2xl font-bold text-center pb-2">Timeline</h2>
+<div
+  id="new-tweet-placeholder"
+  sse-swap="new-tweet"
+  hx-target="#timeline"
+  hx-swap="afterbegin"
+/>
+{{ template "timeline" . }} {{ end }}
