@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"fmt"
-	"html/template"
+	"htmxx/templ"
 	"htmxx/model"
 	"htmxx/service"
 	"net"
@@ -16,12 +16,6 @@ import (
 type TweetHandler struct {
 	tweetService  service.TweetService
 	eventsService service.EventsService
-}
-
-type Tweet struct {
-	ID      int
-	Author  int
-	Content string
 }
 
 func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
@@ -39,12 +33,11 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle tweet
-	tmpl, err := template.ParseFiles("templates/base.html", "templates/individualTweet.html", "templates/tweet.html", "templates/likeButton.html")
-	if err != nil || tmpl == nil {
+	tweetComponent := templ.Tweet(tweet)
+	err = templ.Layout(tweetComponent, "Tweet", false).Render(r.Context(), w)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
-	tmpl.Execute(w, tweet)
 }
 
 func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
@@ -67,13 +60,10 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle success
-	tmpl, err := template.ParseFiles("templates/swapTweet.html", "templates/tweet.html", "templates/likeButton.html")
-	if err != nil || tmpl == nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	var stringTmpl bytes.Buffer
-	tmpl.Execute(&stringTmpl, tweet)
+	insertTweetComponent := templ.InsertTweet(tweet)
+	insertTweetComponent.Render(r.Context(), &stringTmpl)
+
 	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%s", strings.ReplaceAll(stringTmpl.String(), "\n", "")), EventName: "new-tweet"})
 	http.Error(w, "<span id='tweet-success' class='text-green-700' remove-me='3s' hx-ext='remove-me'>Tweet created</span>", http.StatusCreated)
 
@@ -140,10 +130,7 @@ func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle success
-	tmpl, err := template.ParseFiles("templates/deletedTweet.html")
-	if err != nil || tmpl == nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	tmpl.Execute(w, tweet)
+	deleteTweetComponent := templ.DeletedTweet(tweet)
+	deleteTweetComponent.Render(r.Context(), w)
+
 }

@@ -12,6 +12,7 @@ func main() {
 	tweetHandler := handler.TweetHandler{}
 	timelineHandler := handler.TimelineHandler{}
 	sseEventsHandler := handler.SSEEventsHandler{}
+	aboutHandler := handler.AboutHandler{}
 	staticFS := http.FileServer(http.Dir("./static"))
 	router.HandleFunc("GET /", timelineHandler.GetTimeline)
 	router.HandleFunc("GET /{author}/", timelineHandler.GetUserTimeline)
@@ -23,6 +24,7 @@ func main() {
 	router.HandleFunc("POST /tweet", tweetHandler.CreateTweet)
 	router.Handle("GET /static/", http.StripPrefix("/static/", staticFS))
 	router.HandleFunc("GET /events", sseEventsHandler.EventsHandler)
+	router.HandleFunc("GET /about", aboutHandler.GetAbout)
 
 	port := os.Getenv("PORT")
 	if port == "" {

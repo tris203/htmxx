@@ -1,0 +1,82 @@
+package templ
+
+import (
+	"htmxx/model"
+	"fmt"
+)
+
+templ InsertTweet(tweet *model.Tweet) {
+	<div hx-swap-oob="afterbegin" id="timeline">
+		@Tweet(tweet)
+	</div>
+}
+
+templ newTweetListener() {
+	<div id="new-tweet-placeholder" sse-swap="new-tweet" hx-target="#timeline" hx-swap="afterbegin"></div>
+}
+
+templ infiniteScroll(maxID int) {
+	if maxID > 0 {
+		<div
+			id="inf-scroll"
+			hx-get={ getStringURL("page", maxID) }
+			hx-target="#timeline > div:last-child"
+			hx-select="#timeline"
+			hx-swap="afterend"
+			hx-trigger="revealed"
+		>
+			<div class="flex gap-2 w-full justify-center htmx-indicator">
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+			</div>
+		</div>
+	}
+}
+
+templ infiniteScrollUser(maxID int, username string) {
+	if maxID > 0 {
+		<div
+			id="inf-scroll"
+			hx-get={ getStringURL(fmt.Sprintf("page/%s", username), maxID) }
+			hx-target="#timeline > div:last-child"
+			hx-select="#timeline"
+			hx-swap="afterend"
+			hx-trigger="revealed"
+		>
+			<div class="flex gap-2 w-full justify-center htmx-indicator">
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+				<div class="w-5 h-5 rounded-full animate-pulse bg-blue-600"></div>
+			</div>
+		</div>
+	}
+}
+
+templ Timeline(tweets []*model.Tweet) {
+	@CreateNewTweet()
+	<h2 class="text-2xl font-bold text-center pb-2">Timeline</h2>
+	@newTweetListener()
+	<div id="timeline" class="grid grid-cols-1 gap-2">
+		for _, tweet := range tweets {
+			@Tweet(tweet)
+		}
+		@infiniteScroll(getMaxID(tweets))
+	</div>
+}
+
+templ DeletedTweet(tweet model.Tweet) {
+	<div id={ getIDName("tweet", tweet.ID) } remove-me="3s" hx-ext="remove-me" hx-swap-oob="outerHTML">
+		<p>This tweet has been deleted.</p>
+	</div>
+}
+
+templ UserTimeline(tweets []*model.Tweet, username string) {
+	<h2 class="text-2xl font-bold text-center pb-2">{ fmt.Sprintf("%s's Timeline", username) }</h2>
+	<div id="timeline" class="grid grid-cols-1 gap-2">
+		for _, tweet := range tweets {
+			@Tweet(tweet)
+		}
+		@infiniteScrollUser(getMaxID(tweets), tweets[0].Author)
+	</div>
+}
