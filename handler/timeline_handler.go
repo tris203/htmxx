@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"html/template"
+	"fmt"
 	"htmxx/service"
+	"htmxx/templ"
 	"net"
 	"net/http"
 	"strconv"
@@ -15,8 +16,8 @@ type TimelineHandler struct {
 func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 
-	minid, err := strconv.Atoi(r.PathValue("minid"))
-	if err != nil {
+	minid, iderr := strconv.Atoi(r.PathValue("minid"))
+	if iderr != nil {
 		minid = 0
 	}
 	timeline, err := h.timelineService.GetTimeline(ip, minid)
@@ -26,12 +27,13 @@ func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle timeline
-	tmpl, err := template.ParseFiles("templates/base.html", "templates/index.html", "templates/createTweet.html", "templates/timeline.html", "templates/tweet.html", "templates/likeButton.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	timelineComponent := templ.Timeline(timeline)
+	rerr := templ.Layout(timelineComponent, "Home", true).Render(r.Context(), w)
+
+	if rerr != nil {
+		http.Error(w, rerr.Error(), http.StatusInternalServerError)
 		return
 	}
-	tmpl.Execute(w, timeline)
 }
 
 func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
@@ -54,11 +56,11 @@ func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// handle timeline
-	tmpl, err := template.ParseFiles("templates/base.html", "templates/usertimeline.html", "templates/wrapusertimeline.html", "templates/tweet.html", "templates/likeButton.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	timelineComponent := templ.UserTimeline(timeline, author)
+	rerr := templ.Layout(timelineComponent, fmt.Sprintf("%s's Timeline", author), true).Render(r.Context(), w)
+
+	if rerr != nil {
+		http.Error(w, rerr.Error(), http.StatusInternalServerError)
 		return
 	}
-	tmpl.Execute(w, timeline)
 }
