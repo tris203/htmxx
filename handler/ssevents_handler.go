@@ -44,29 +44,4 @@ func (h *SSEEventsHandler) EventsHandler(w http.ResponseWriter, r *http.Request)
 			return
 		}
 	}
-
-
-
-
-	/* // go func() {
-		for data := range channel {
-			fmt.Println(fmt.Sprintf("Sending message: %s for %s", data.Data, data.EventName))
-			_, err := fmt.Fprintf(w, "event: %s\ndata: %s\n\n", data.EventName, data.Data)
-			if err != nil {
-				fmt.Println(fmt.Printf("Error sending message: %v", err))
-			}
-			w.(http.Flusher).Flush()
-		} */
-	// }()
-
-	/* // Simulate sending messages
-	i := 10
-	for {
-		randomTweet := rand.Intn(3) + 1
-		i++
-		fmt.Fprintf(w, "event: like-count-%d\ndata: %d\n\n", randomTweet, i)
-		time.Sleep(2 * time.Second)
-		w.(http.Flusher).Flush()
-	} */
-
 }
