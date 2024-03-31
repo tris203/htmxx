@@ -3,29 +3,15 @@ package templ
 templ header(title string) {
 	<!DOCTYPE html>
 	<head>
-		<title>{ title }</title>
-		<script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+		<title>htmxx/{ title }</title>
+		<script src="https://unpkg.com/htmx.org"></script>
 		<script src="https://unpkg.com/htmx.org/dist/ext/remove-me.js"></script>
 		<script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+		<script src="https://unpkg.com/sweetalert2"></script>
+		<script src="/static/hxext/hx-back-to-the-future.js"></script>
+
 		<link rel="stylesheet" href="/static/css/tailwind.css"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<style>
-		.htmx-indicator {
-			opacity: 0;
-			height: 0;
-			transition: opacity 500ms ease-in;
-		}
-
-		.htmx-request .htmx-indicator {
-			height: auto;
-			opacity: 1;
-		}
-
-		.htmx-request.htmx-indicator {
-			height: auto;
-			opacity: 1;
-		}
-	</style>
 	</head>
 }
 
@@ -39,11 +25,7 @@ templ nav() {
 templ Layout(contents templ.Component, title string, sseEnabled bool) {
 	@header(title)
 	<body hx-boost="true" class="bg-gray-400" hx-ext="sse" sse-connect="/events">
-		<header
-			class="bg-gray-800 text-white p-4 flex text-2xl items-center"
-			hx-target="body"
-			hx-push-url="true"
-		>
+		<header class="bg-gray-800 text-white p-4 flex text-2xl items-center" hx-target="body" hx-push-url="true">
 			<span class="font-bold">&lt;</span>
 			<span class="font-bold text-[#3D72D7]">/</span>
 			<span class="font-bold">&gt;</span>
