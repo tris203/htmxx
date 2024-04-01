@@ -40,3 +40,12 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
+
+func (h *SearchHandler) GetSearch(w http.ResponseWriter, r *http.Request) {
+
+	rerr := templ.Layout(templ.SearchForm(), "Search", true).Render(r.Context(), w)
+
+	if rerr != nil {
+		http.Error(w, rerr.Error(), http.StatusInternalServerError)
+	}
+}

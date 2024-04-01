@@ -4,6 +4,19 @@ import (
 	"htmxx/model"
 )
 
+templ SearchInput() {
+	<input
+		type="text"
+		placeholder="Search..."
+		id="search"
+		name="search"
+		class="p-2 border border-gray-500 rounded-lg w-full"
+		hx-post="/search"
+		hx-target="#searchresults"
+		hx-trigger="input changed delay:500ms, search"
+	/>
+}
+
 templ SearchResult(searchTerm string, results []*model.Tweet) {
 	<div class="searchresults">
 		<h1>Search Results for { searchTerm }</h1>
@@ -24,6 +37,14 @@ templ NoResults(searchTerm string) {
 
 templ ResetSearch() {
 	<div class="searchresults"></div>
+}
+
+templ SearchForm() {
+	<div id="about" class="grid grid-cols-1 gap-2 p-4">
+		@TopBar("htmxx", "Search")
+		@SearchInput()
+		<div id="searchresults"></div>
+	</div>
 }
 
 func shortenTweet(tweet *model.Tweet) string {

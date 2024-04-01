@@ -26,6 +26,7 @@ func main() {
 	router.Handle("GET /static/", http.StripPrefix("/static/", staticFS))
 	router.HandleFunc("GET /events", sseEventsHandler.EventsHandler)
 	router.HandleFunc("GET /about", aboutHandler.GetAbout)
+	router.HandleFunc("GET /search", searchHandler.GetSearch)
 	router.HandleFunc("POST /search", searchHandler.Search)
 
 
