@@ -40,8 +40,8 @@ templ ResetSearch() {
 }
 
 templ SearchForm() {
-	<div id="about" class="grid grid-cols-1 gap-2 p-4">
-		@TopBar("htmxx", "Search")
+	@TopBar("htmxx", "Search")
+	<div id="searchform" class="grid grid-cols-1 gap-2">
 		@SearchInput()
 		<div id="searchresults"></div>
 	</div>
