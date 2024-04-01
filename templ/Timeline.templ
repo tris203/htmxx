@@ -80,7 +80,7 @@ templ DeletedTweet(tweet model.Tweet) {
 
 templ UserTimeline(tweets []*model.Tweet, username string) {
 	@TopBar(username, "Timeline")
-	<div id="timeline" class="grid grid-cols-1 gap-2">
+	<div id="timeline" class="grid grid-cols-1 gap-2 p-4">
 		for _, tweet := range tweets {
 			@Tweet(tweet)
 		}

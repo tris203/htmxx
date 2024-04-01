@@ -1,8 +1,8 @@
 package templ
 
 templ About() {
-	<div id="about" class="grid grid-cols-1 gap-2 p-4">
-		@TopBar("htmxx", "About")
+	@TopBar("htmxx", "About")
+	<div id="about" class="grid grid-cols-1 gap-2">
 		<div class="prose htmx-added:opacity-0 opacity-100 transition-opacity duration-500 max-w-none">
 			<h2>What is htmxx?</h2>
 			<p>htmxx is an open source proof of concept rewrite of Twitter/X's functionality in htmx and Go.</p>

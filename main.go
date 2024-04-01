@@ -14,6 +14,7 @@ func main() {
 	sseEventsHandler := handler.SSEEventsHandler{}
 	aboutHandler := handler.AboutHandler{}
 	searchHandler := handler.SearchHandler{}
+	messageHandler := handler.MessagesHandler{}
 	staticFS := http.FileServer(http.Dir("./static"))
 	router.HandleFunc("GET /", timelineHandler.GetTimeline)
 	router.HandleFunc("GET /{author}/", timelineHandler.GetUserTimeline)
@@ -28,7 +29,7 @@ func main() {
 	router.HandleFunc("GET /about", aboutHandler.GetAbout)
 	router.HandleFunc("GET /search", searchHandler.GetSearch)
 	router.HandleFunc("POST /search", searchHandler.Search)
-
+	router.HandleFunc("GET /messages", messageHandler.GetMessages)
 
 	port := os.Getenv("PORT")
 	if port == "" {

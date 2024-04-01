@@ -73,16 +73,7 @@ templ LeftMenu() {
 
 templ RightMenu() {
 	<div class="sticky top-0 flex-col p-4 pt-14">
-		<input
-			type="text"
-			placeholder="Search..."
-			id="search"
-			name="search"
-			class="p-2 border border-gray-500 rounded-lg w-full"
-			hx-post="/search"
-			hx-target="#searchresults"
-			hx-trigger="input changed delay:500ms, search"
-		/>
+	@SearchInput()
 		<div id="searchresults" class="p-4"></div>
 	</div>
 }
