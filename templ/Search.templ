@@ -1,0 +1,34 @@
+package templ
+
+import (
+	"htmxx/model"
+)
+
+templ SearchResult(searchTerm string, results []*model.Tweet) {
+	<div class="searchresults">
+		<h1>Search Results for { searchTerm }</h1>
+		for _, tweet := range results {
+			<div class="p-2" hx-get={ getIDURL("tweet", tweet.ID) } hx-push-url="true" hx-target="body">
+				<h2>{ tweet.Author }</h2>
+				<p>{ shortenTweet(tweet) }</p>
+			</div>
+		}
+	</div>
+}
+
+templ NoResults(searchTerm string) {
+	<div class="searchresults">
+		<h1>No results for { searchTerm }</h1>
+	</div>
+}
+
+templ ResetSearch() {
+	<div class="searchresults"></div>
+}
+
+func shortenTweet(tweet *model.Tweet) string {
+	if len(tweet.Content) > 140 {
+		return tweet.Content[:140] + "..."
+	}
+	return tweet.Content
+}

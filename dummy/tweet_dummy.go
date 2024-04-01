@@ -7,6 +7,7 @@ import (
 	"slices"
 	"sort"
 	"time"
+	"strings"
 )
 
 var fakeTweetList = []*model.Tweet{
@@ -181,4 +182,19 @@ func AddLike(id int, userid string) (likeCount int, LikedBySelf bool, error erro
 		}
 	}
 	return 0, false, nil
+}
+
+func SearchTweets(searchTerm string, requester string) ([]*model.Tweet, error) {
+	fmt.Println(fmt.Sprintf("Searching for tweets containing %s", searchTerm))
+	allTweets, err := GetDummyTweetList(requester)
+	if err != nil {
+		return nil, err
+	}
+	var searchResults []*model.Tweet
+	for _, tweet := range allTweets {
+		if strings.Contains(tweet.Content, searchTerm) {
+			searchResults = append(searchResults, tweet)
+		}
+	}
+	return searchResults, nil
 }

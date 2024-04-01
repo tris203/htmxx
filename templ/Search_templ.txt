@@ -1,0 +1,10 @@
+<div class=\"searchresults\"><h1>Search Results for 
+</h1>
+<div class=\"p-2\" hx-get=\"
+\" hx-push-url=\"true\" hx-target=\"body\"><h2>
+</h2><p>
+</p></div>
+</div>
+<div class=\"searchresults\"><h1>No results for 
+</h1></div>
+<div class=\"searchresults\"></div>
