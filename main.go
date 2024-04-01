@@ -29,7 +29,8 @@ func main() {
 	router.HandleFunc("GET /about", aboutHandler.GetAbout)
 	router.HandleFunc("GET /search", searchHandler.GetSearch)
 	router.HandleFunc("POST /search", searchHandler.Search)
-	router.HandleFunc("GET /messages", messageHandler.GetMessages)
+	router.HandleFunc("GET /messages/", messageHandler.GetMessages)
+
 
 	port := os.Getenv("PORT")
 	if port == "" {
