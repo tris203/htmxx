@@ -8,7 +8,7 @@
 <div class=\"sticky top-0 flex-col p-4 pt-14\"><input type=\"text\" placeholder=\"Search...\" id=\"search\" name=\"search\" class=\"p-2 border border-gray-500 rounded-lg w-full\" hx-post=\"/search\" hx-target=\"#searchresults\" hx-trigger=\"input changed delay:500ms, search\"><div id=\"searchresults\" class=\"p-4\"></div></div>
 <div class=\"fixed bottom-0 w-full bg-gray-800 flex justify-around\">
 <a href=\"
-\" class=\"p-2 text-center\"><svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" width=\"100\" fill=\"none\" height=\"100\" viewBox=\"0 0 30 30\" class=\"w-5 h-5 stroke-[#3D72D7]\"><path d=\"
+\" class=\"p-2 text-center\"><svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" width=\"100\" fill=\"none\" height=\"100\" viewBox=\"0 0 30 30\" class=\"w-5 h-5 stroke-white\"><path d=\"
 \"></path></svg></a>
 </div>
 <body hx-boost=\"true\" class=\"bg-gray-400\" hx-ext=\"sse\" sse-connect=\"/events\"><div class=\"grid grid-cols-1 md:grid-cols-5 gap-4\"><div class=\"hidden md:block col-span-1\">
