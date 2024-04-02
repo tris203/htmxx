@@ -79,9 +79,9 @@ templ RightMenu() {
 }
 
 templ MobileBottomMenu() {
-	<div class="fixed bottom-0 w-full bg-gray-800 flex justify-around">
+	<div class="fixed bottom-0 w-full bg-gray-800 flex justify-around p-2">
 		for _, item := range MenuItems {
-			<a href={ templ.SafeURL(item.Link) } class="p-2 text-center">
+			<a href={ templ.SafeURL(item.Link) }>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					x="0px"
@@ -90,7 +90,7 @@ templ MobileBottomMenu() {
 					fill="none"
 					height="100"
 					viewBox="0 0 30 30"
-					class="w-5 h-5 stroke-white"
+					class="w-10 h-10 stroke-white"
 				>
 					<path d={ item.SvgPath }></path>
 				</svg>

@@ -1,7 +1,6 @@
 package dummy
 
 import (
-	"crypto/md5"
 	"fmt"
 	"htmxx/model"
 	"slices"
@@ -75,7 +74,7 @@ func GetDummyTweetList(requester string) ([]*model.Tweet, error) {
 		}
 	}
 	for _, tweet := range allTweets {
-		if tweet.Author == fmt.Sprintf("%x", md5.Sum([]byte(requester))) {
+		if tweet.Author == requester {
 			tweet.IsAuthor = true
 		} else {
 			tweet.IsAuthor = false
@@ -154,7 +153,7 @@ func GetUserTimeline(requester string, author string, max_id int) ([]*model.Twee
 func DeleteTweet(id int, requester string) (tweet model.Tweet, error error) {
 	for i, tweet := range fakeTweetList {
 		if tweet.ID == id {
-			if tweet.Author != fmt.Sprintf("%x", md5.Sum([]byte(requester))) {
+			if tweet.Author != requester {
 				return *tweet, fmt.Errorf("User %s is not the author of tweet %d", requester, id)
 			}
 			fakeTweetList = append(fakeTweetList[:i], fakeTweetList[i+1:]...)

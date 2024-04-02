@@ -2,7 +2,6 @@ package handler
 
 import (
 	"bytes"
-	"crypto/md5"
 	"fmt"
 	"htmxx/model"
 	"htmxx/service"
@@ -16,6 +15,7 @@ import (
 type TweetHandler struct {
 	tweetService  service.TweetService
 	eventsService service.EventsService
+	userService   service.UserService
 }
 
 func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
@@ -42,9 +42,8 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 
 func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 	var content = r.FormValue("content")
-	var ip, _, _ = net.SplitHostPort(r.RemoteAddr)
 	// envrypt the ip
-	author := fmt.Sprintf("%x", md5.Sum([]byte(ip)))
+	author := h.userService.GetCurrentUser(r)
 
 	tweet := &model.Tweet{
 		Author:  author,

@@ -7,9 +7,9 @@
 </div>
 <div class=\"sticky top-0 flex-col p-4 pt-14\">
 <div id=\"searchresults\" class=\"p-4\"></div></div>
-<div class=\"fixed bottom-0 w-full bg-gray-800 flex justify-around\">
+<div class=\"fixed bottom-0 w-full bg-gray-800 flex justify-around p-2\">
 <a href=\"
-\" class=\"p-2 text-center\"><svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" width=\"100\" fill=\"none\" height=\"100\" viewBox=\"0 0 30 30\" class=\"w-5 h-5 stroke-white\"><path d=\"
+\"><svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" width=\"100\" fill=\"none\" height=\"100\" viewBox=\"0 0 30 30\" class=\"w-10 h-10 stroke-white\"><path d=\"
 \"></path></svg></a>
 </div>
 <body hx-boost=\"true\" class=\"bg-gray-400\" hx-ext=\"sse\" sse-connect=\"/events\"><div class=\"grid grid-cols-1 md:grid-cols-5 gap-4\"><div class=\"hidden md:block col-span-1\">

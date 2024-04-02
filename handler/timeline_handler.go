@@ -11,16 +11,16 @@ import (
 
 type TimelineHandler struct {
 	timelineService service.TimelineService
+	userService     service.UserService
 }
 
 func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-
+var user = h.userService.GetCurrentUser(r)
 	minid, iderr := strconv.Atoi(r.PathValue("minid"))
 	if iderr != nil {
 		minid = 0
 	}
-	timeline, err := h.timelineService.GetTimeline(ip, minid)
+	timeline, err := h.timelineService.GetTimeline(user, minid)
 	if err != nil {
 		// handle error
 		http.Error(w, "Error: %v", http.StatusInternalServerError)
@@ -52,7 +52,7 @@ func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request
 	}
 	if len(timeline) == 0 {
 		// handle error
-		http.Error(w, "User not found", http.StatusNotFound)
+		http.Error(w, "User not found", http.StatusNoContent)
 		return
 	}
 
