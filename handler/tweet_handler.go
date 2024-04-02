@@ -6,7 +6,6 @@ import (
 	"htmxx/model"
 	"htmxx/service"
 	"htmxx/templ"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,8 +24,8 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid tweet ID", http.StatusBadRequest)
 		return
 	}
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-	tweet, err := h.tweetService.GetTweet(id, ip)
+	requester := h.userService.GetCurrentUser(r)
+	tweet, err := h.tweetService.GetTweet(id, requester)
 	if err != nil {
 		// handle error
 		http.Error(w, "Tweet not found", http.StatusNotFound)
@@ -72,13 +71,13 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 
 func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	requester := h.userService.GetCurrentUser(r)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	newLikeCount, likedBySelf, err := h.tweetService.AddLike(id, ip)
+	newLikeCount, likedBySelf, err := h.tweetService.AddLike(id, requester)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -98,8 +97,8 @@ func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-	tweet, err := h.tweetService.DeleteTweet(id, ip)
+	requester := h.userService.GetCurrentUser(r)
+	tweet, err := h.tweetService.DeleteTweet(id, requester)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)

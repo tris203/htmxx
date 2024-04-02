@@ -2,12 +2,13 @@ package handler
 
 import (
 	"htmxx/dummy"
+	"htmxx/service"
 	"htmxx/templ"
-	"net"
 	"net/http"
 )
 
 type SearchHandler struct {
+	userService service.UserService
 }
 
 func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
@@ -20,9 +21,9 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	requester := h.userService.GetCurrentUser(r)
 
-	searchResults, err := dummy.SearchTweets(searchTerm, ip)
+	searchResults, err := dummy.SearchTweets(searchTerm, requester)
 
 	if len(searchResults) == 0 {
 		noResultsComponent := templ.NoResults(searchTerm)

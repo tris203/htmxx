@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"htmxx/service"
 	"htmxx/templ"
-	"net"
 	"net/http"
 	"strconv"
 )
@@ -37,14 +36,14 @@ var user = h.userService.GetCurrentUser(r)
 }
 
 func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	requster := h.userService.GetCurrentUser(r)
 	author := r.PathValue("author")
 	minid, err := strconv.Atoi(r.PathValue("minid"))
 	if err != nil {
 		minid = 0
 	}
 
-	timeline, err := h.timelineService.GetUserTimeline(ip, author, minid)
+	timeline, err := h.timelineService.GetUserTimeline(requster, author, minid)
 	if err != nil {
 		// handle error
 		http.Error(w, "Error: %v", http.StatusInternalServerError)
