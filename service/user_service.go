@@ -21,7 +21,12 @@ func (s *UserService) GetCurrentUser(request *http.Request) string {
 		ip = net.ParseIP(addrs[len(addrs)-1]).String()
 	}
 
+
 	user := fmt.Sprintf("%x", md5.Sum([]byte(ip)))
+	fmt.Println("IP: ", ip)
+	fmt.Println("Forwarded: ", forward)
+	fmt.Println("User: ", user)
+
 	return user
 
 }
