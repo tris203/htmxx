@@ -5,8 +5,8 @@ import (
 	"htmxx/model"
 	"slices"
 	"sort"
-	"time"
 	"strings"
+	"time"
 )
 
 var fakeTweetList = []*model.Tweet{
@@ -60,7 +60,10 @@ var fakeTweetList = []*model.Tweet{
 	},
 }
 
-var tweetsPerPage =  6
+// map of key username and value of bookmarked tweets ids
+var bookmarkedTweets = map[string][]int{}
+
+var tweetsPerPage = 6
 
 var nextTweetID = len(fakeTweetList) + 1
 
@@ -73,6 +76,7 @@ func GetDummyTweetList(requester string) ([]*model.Tweet, error) {
 			tweet.LikedBySelf = false
 		}
 	}
+
 	for _, tweet := range allTweets {
 		if tweet.Author == requester {
 			tweet.IsAuthor = true
@@ -80,6 +84,15 @@ func GetDummyTweetList(requester string) ([]*model.Tweet, error) {
 			tweet.IsAuthor = false
 		}
 	}
+
+	for _, tweet := range allTweets {
+		if slices.Contains(bookmarkedTweets[requester], tweet.ID) {
+			tweet.BookmarkedBySelf = true
+		} else {
+			tweet.BookmarkedBySelf = false
+		}
+	}
+
 	return allTweets, nil
 }
 
@@ -196,4 +209,45 @@ func SearchTweets(searchTerm string, requester string) ([]*model.Tweet, error) {
 		}
 	}
 	return searchResults, nil
+}
+
+func GetLikedTweets(requester string) ([]*model.Tweet, error) {
+	allTweets, err := GetDummyTweetList(requester)
+	if err != nil {
+		return nil, err
+	}
+	var likedTweets []*model.Tweet
+	for _, tweet := range allTweets {
+		if slices.Contains(tweet.LikedBy, requester) {
+			likedTweets = append(likedTweets, tweet)
+		}
+	}
+	return likedTweets, nil
+}
+
+func BookmarkTweet(tweetID int, requester string) (bool, error) {
+	alreadyBookmarked := slices.Contains(bookmarkedTweets[requester], tweetID)
+	if alreadyBookmarked {
+		//remove Bookmark
+		bookmarkIndex := slices.Index(bookmarkedTweets[requester], tweetID)
+		if bookmarkIndex != -1 {
+			bookmarkedTweets[requester] = append(bookmarkedTweets[requester][:bookmarkIndex], bookmarkedTweets[requester][bookmarkIndex+1:]...)
+		}
+		return false, nil
+	}
+	bookmarkedTweets[requester] = append(bookmarkedTweets[requester], tweetID)
+	return true, nil
+}
+
+func GetBookmarkedTweets(requester string) ([]*model.Tweet, error) {
+	var bookmarkedTweetList []*model.Tweet
+	for _, tweetID := range bookmarkedTweets[requester] {
+		for _, tweet := range fakeTweetList {
+			if tweet.ID == tweetID {
+				tweet.BookmarkedBySelf = true
+				bookmarkedTweetList = append(bookmarkedTweetList, tweet)
+			}
+		}
+	}
+	return bookmarkedTweetList, nil
 }

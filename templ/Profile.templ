@@ -1,0 +1,14 @@
+package templ
+
+templ Profile(name string) {
+	@TopBar(name, "Profile")
+	<div id="profile" class="grid grid-cols-1 gap-2">
+		<div class="prose htmx-added:opacity-0 opacity-100 transition-opacity duration-500 max-w-none">
+			<p>
+				Currently usernames are automatically generated from a hash of IP address. This will be changed in the
+				future.
+			</p>
+			<p>Username: <span id="username" class="font-bold">{ name }</span></p>
+		</div>
+	</div>
+}

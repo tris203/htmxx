@@ -26,7 +26,7 @@ var user = h.userService.GetCurrentUser(r)
 		return
 	}
 	// handle timeline
-	timelineComponent := templ.Timeline(timeline)
+	timelineComponent := templ.Timeline(timeline, user)
 	rerr := templ.Layout(timelineComponent, "Home", true).Render(r.Context(), w)
 
 	if rerr != nil {
@@ -55,7 +55,7 @@ func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	timelineComponent := templ.UserTimeline(timeline, author)
+	timelineComponent := templ.UserTimeline(timeline, author, requster)
 	rerr := templ.Layout(timelineComponent, fmt.Sprintf("%s's Timeline", author), true).Render(r.Context(), w)
 
 	if rerr != nil {

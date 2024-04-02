@@ -101,7 +101,7 @@ func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 	tweet, err := h.tweetService.DeleteTweet(id, requester)
 	if err != nil {
 		// handle error
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 	// handle success

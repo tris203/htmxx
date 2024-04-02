@@ -9,12 +9,22 @@
 \" hx-target=\"#timeline &gt; div:last-child\" hx-select=\"#timeline\" hx-swap=\"afterend\" hx-trigger=\"revealed\">
 </div>
 <h2 class=\"text-2xl font-bold text-center pb-2\">Timeline</h2>
-<div id=\"timeline\" class=\"grid grid-cols-1 gap-2\">
+<div id=\"timeline\" class=\"grid grid-cols-1 gap-2\" x-data=\"
+\">
 </div>
 <div id=\"
 \" remove-me=\"2.1s\" hx-ext=\"remove-me,back-to-the-future\" hx-swap-oob=\"outerHTML\"><div class=\"border border-gray-200 rounded-lg p-4 htmx-added:opacity-100 opacity-0 transition-opacity duration-1000 delay-1000\"><p>This tweet has been deleted.</p></div></div>
-<div id=\"timeline\" class=\"grid grid-cols-1 gap-2 p-4\">
+<div id=\"tabs\" class=\"flex justify-center items-center gap-2 p-4\"><a href=\"
+\" class=\"bg-blue-500 text-white font-bold py-2 px-4 rounded-lg\" hx-select=\"#timeline\" hx-target=\"#timeline\">Posts</a> <a href=\"
+\" class=\"bg-blue-500 text-white font-bold py-2 px-4 rounded-lg\" hx-select=\"#timeline\" hx-target=\"#timeline\">Likes</a></div><div id=\"timeline\" class=\"grid grid-cols-1 gap-2 p-4\" x-data=\"
+\">
 </div>
 <div id=\"createTweet\" class=\"w-full p-4 rounded-lg justify-center items-center flex flex-col\"><h1 class=\"text-2xl font-bold pb-2\">Create Tweet</h1><form hx-post=\"/tweet\" hx-swap=\"innerHTML\" hx-target=\"#tweet-status\" hx-on::after-request=\" if(event.detail.successful) this.reset()\" class=\"flex flex-col items-center w-full\" hx-disabled-elt=\"textarea, button\"><textarea type=\"text\" id=\"content\" name=\"content\" required class=\"w-full p-2 rounded-lg border border-gray-900 bg-gray-300 disabled:cursor-not-allowed disabled:opacity-75 transition-all duration-200 ease-in-out opacity-100\" placeholder=\"What&#39;s happening?\"></textarea> <span id=\"tweet-status\" class=\"h-4\"></span> <button type=\"submit\" class=\"bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-2 disabled:opacity-75 disabled:cursor-not-allowed disabled:bg-gray-500 duration-200 ease-in-out opacity-100\">Tweet</button>
 </form></div>
 <span id=\"tweet-success\" class=\"text-green-700\" remove-me=\"3s\" hx-ext=\"remove-me\">Tweet created</span>
+<div id=\"timeline\" class=\"grid grid-cols-1 gap-2 p-4\" x-data=\"
+\">
+</div>
+<div id=\"timeline\" class=\"grid grid-cols-1 gap-2 p-4\" x-data=\"
+\">
+</div>

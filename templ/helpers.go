@@ -21,6 +21,10 @@ func getProfileURL(username string) string {
 	return fmt.Sprintf("/%s/", username)
 }
 
+func getLikesURL(username string) string {
+	return fmt.Sprintf("/likes/%s", username)
+}
+
 func getHXSelector(basename string, id int) string {
 	return fmt.Sprintf("#%s-%d", basename, id)
 }

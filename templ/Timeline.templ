@@ -7,7 +7,7 @@ import (
 
 templ InsertTweet(tweet *model.Tweet) {
 	<div hx-swap-oob="afterbegin" id="timeline">
-		@Tweet(tweet)
+		@Tweet(tweet, false)
 	</div>
 }
 
@@ -56,13 +56,13 @@ templ infiniteScrollUser(maxID int, username string) {
 	}
 }
 
-templ Timeline(tweets []*model.Tweet) {
+templ Timeline(tweets []*model.Tweet, currentUser string) {
 	@CreateNewTweet()
 	<h2 class="text-2xl font-bold text-center pb-2">Timeline</h2>
 	@newTweetListener()
-	<div id="timeline" class="grid grid-cols-1 gap-2">
+	<div id="timeline" class="grid grid-cols-1 gap-2" x-data={ fmt.Sprintf("{ currentUser: '%s' }", currentUser) }>
 		for _, tweet := range tweets {
-			@Tweet(tweet)
+			@Tweet(tweet, false)
 		}
 		@infiniteScroll(getMaxID(tweets))
 	</div>
@@ -78,11 +78,29 @@ templ DeletedTweet(tweet model.Tweet) {
 	</div>
 }
 
-templ UserTimeline(tweets []*model.Tweet, username string) {
+templ UserTimeline(tweets []*model.Tweet, username string, currentUser string) {
 	@TopBar(username, "Timeline")
-	<div id="timeline" class="grid grid-cols-1 gap-2 p-4">
+	<div id="tabs" class="flex justify-center items-center gap-2 p-4">
+		<a
+			href={ templ.SafeURL(getProfileURL(username)) }
+			class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg"
+			hx-select="#timeline"
+			hx-target="#timeline"
+		>
+			Posts
+		</a>
+		<a
+			href={ templ.SafeURL(getLikesURL(username)) }
+			class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg"
+			hx-select="#timeline"
+			hx-target="#timeline"
+		>
+			Likes
+		</a>
+	</div>
+	<div id="timeline" class="grid grid-cols-1 gap-2 p-4" x-data={ fmt.Sprintf("{ currentUser: '%s' }", currentUser) }>
 		for _, tweet := range tweets {
-			@Tweet(tweet)
+			@Tweet(tweet, false)
 		}
 		@infiniteScrollUser(getMaxID(tweets), tweets[0].Author)
 	</div>
@@ -121,4 +139,22 @@ templ CreateNewTweet() {
 
 templ CreateNewTweetConfirmation() {
 	<span id="tweet-success" class="text-green-700" remove-me="3s" hx-ext="remove-me">Tweet created</span>
+}
+
+templ LikesList(likes []*model.Tweet, username string, currentUser string) {
+	@TopBar(username, "Likes")
+	<div id="timeline" class="grid grid-cols-1 gap-2 p-4" x-data={ fmt.Sprintf("{ currentUser : '%s' }", currentUser) }>
+		for _, like := range likes {
+			@Tweet(like, false)
+		}
+	</div>
+}
+
+templ BookmarkList(bookmarks []*model.Tweet, username string) {
+	@TopBar(username, "Bookmarks")
+	<div id="timeline" class="grid grid-cols-1 gap-2 p-4" x-data={ fmt.Sprintf("{ currentUser: '%s' }", username) }>
+		for _, bookmark := range bookmarks {
+			@Tweet(bookmark, false)
+		}
+	</div>
 }

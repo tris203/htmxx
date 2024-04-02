@@ -11,4 +11,5 @@ type Tweet struct {
 	// TODO: this should be an int list of user IDs
 	LikedBy     []string
 	LikedBySelf bool
+	BookmarkedBySelf bool
 }

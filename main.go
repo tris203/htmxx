@@ -15,6 +15,9 @@ func main() {
 	aboutHandler := handler.AboutHandler{}
 	searchHandler := handler.SearchHandler{}
 	messageHandler := handler.MessagesHandler{}
+	likesListHandler := handler.LikesListHandler{}
+	bookmarkHandler := handler.BookmarkHandler{}
+	profileHandler := handler.ProfileHandler{}
 	staticFS := http.FileServer(http.Dir("./static"))
 	router.HandleFunc("GET /", timelineHandler.GetTimeline)
 	router.HandleFunc("GET /{author}/", timelineHandler.GetUserTimeline)
@@ -30,6 +33,12 @@ func main() {
 	router.HandleFunc("GET /search", searchHandler.GetSearch)
 	router.HandleFunc("POST /search", searchHandler.Search)
 	router.HandleFunc("GET /messages/", messageHandler.GetMessages)
+	router.HandleFunc("GET /likes/", likesListHandler.GetLikesList)
+	router.HandleFunc("GET /likes/{author}/", likesListHandler.GetLikesList)
+	router.HandleFunc("GET /bookmarks/", bookmarkHandler.GetBookmark)
+	router.HandleFunc("POST /bookmark/{id}", bookmarkHandler.AddBookmark)
+	router.HandleFunc("GET /profile/", profileHandler.GetProfile)
+
 
 
 	port := os.Getenv("PORT")
