@@ -73,7 +73,7 @@ templ likes(tweet *model.Tweet) {
 	if tweet.IsAuthor {
 		<template x-if={ fmt.Sprintf("currentUser=='%s'", tweet.Author) } x-cloak>
 			<button
-				hx-delete={ getIDURL(" tweet", tweet.ID) }
+				hx-delete={ getIDURL("tweet", tweet.ID) }
 				hx-target={ getHXSelector("tweet", tweet.ID) }
 				hx-trigger="confirmed"
 				onClick="Swal.fire({title: 'Delete Tweet?', text:'Do you want to deletet this tweet?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Delete', confirmButtonColor: '#e3342f', cancelButtonText: 'Cancel', cancelButtonColor: '#4b5563'}).then((result) => {
