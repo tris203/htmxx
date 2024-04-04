@@ -3,13 +3,12 @@ package model
 import "time"
 
 type Tweet struct {
+	// TODO: change these to int64
 	ID       int
 	Author   string
-	IsAuthor bool
 	Content  string
 	Created  time.Time
-	// TODO: this should be an int list of user IDs
-	LikedBy     []string
+	LikeCount int
 	LikedBySelf bool
 	BookmarkedBySelf bool
 }

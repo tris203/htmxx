@@ -68,8 +68,8 @@ templ Timeline(tweets []*model.Tweet, currentUser string) {
 	</div>
 }
 
-templ DeletedTweet(tweet model.Tweet) {
-	<div id={ getIDName("tweet", tweet.ID) } remove-me="2.1s" hx-ext="remove-me,back-to-the-future" hx-swap-oob="outerHTML">
+templ DeletedTweet(id int) {
+	<div id={ getIDName("tweet", id) } remove-me="2.1s" hx-ext="remove-me,back-to-the-future" hx-swap-oob="outerHTML">
 		<div
 			class="border border-gray-200 rounded-lg p-4 htmx-added:opacity-100 opacity-0 transition-opacity duration-1000 delay-1000"
 		>

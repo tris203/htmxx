@@ -18,7 +18,7 @@ type TweetHandler struct {
 }
 
 func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, "Invalid tweet ID", http.StatusBadRequest)
@@ -28,6 +28,7 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 	tweet, err := h.tweetService.GetTweet(id, requester)
 	if err != nil {
 		// handle error
+		fmt.Println(err)
 		http.Error(w, "Tweet not found", http.StatusNotFound)
 		return
 	}
@@ -50,8 +51,6 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err := h.tweetService.CreateTweet(tweet)
-	// show delete on first render
-	tweet.IsAuthor = true
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -70,7 +69,7 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	requester := h.userService.GetCurrentUser(r)
 	if err != nil {
 		// handle error
@@ -85,27 +84,27 @@ func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 	}
 	// handle success
 	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("like-count-%d", id)})
-	heartComponent := templ.Heart(id, likedBySelf, true)
+	heartComponent := templ.Heart(int(id), likedBySelf, true)
 	fmt.Fprintf(w, "%d", newLikeCount)
 	heartComponent.Render(r.Context(), w)
 }
 
 func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	requester := h.userService.GetCurrentUser(r)
-	tweet, err := h.tweetService.DeleteTweet(id, requester)
+	deletedID, err := h.tweetService.DeleteTweet(id, requester)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 	// handle success
-	deleteTweetComponent := templ.DeletedTweet(tweet)
+	deleteTweetComponent := templ.DeletedTweet(int(deletedID))
 	deleteTweetComponent.Render(r.Context(), w)
 
 }

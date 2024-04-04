@@ -15,14 +15,14 @@ type TimelineHandler struct {
 
 func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
 var user = h.userService.GetCurrentUser(r)
-	minid, iderr := strconv.Atoi(r.PathValue("minid"))
+	minid, iderr := strconv.ParseInt(r.PathValue("minid"), 10, 64)
 	if iderr != nil {
-		minid = 0
+		minid = 9223372036854775807
 	}
-	timeline, err := h.timelineService.GetTimeline(user, minid)
+	timeline, err := h.timelineService.GetTimeline(minid, user)
 	if err != nil {
 		// handle error
-		http.Error(w, "Error: %v", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 		return
 	}
 	// handle timeline
@@ -38,12 +38,12 @@ var user = h.userService.GetCurrentUser(r)
 func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
 	requster := h.userService.GetCurrentUser(r)
 	author := r.PathValue("author")
-	minid, err := strconv.Atoi(r.PathValue("minid"))
+	minid, err := strconv.ParseInt(r.PathValue("minid"), 10, 64)
 	if err != nil {
-		minid = 0
+		minid = 9223372036854775807
 	}
 
-	timeline, err := h.timelineService.GetUserTimeline(requster, author, minid)
+	timeline, err := h.timelineService.GetUserTimeline(author, minid, requster)
 	if err != nil {
 		// handle error
 		http.Error(w, "Error: %v", http.StatusInternalServerError)

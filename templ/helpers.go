@@ -2,7 +2,7 @@ package templ
 
 import (
 	"fmt"
-"htmxx/model"
+	"htmxx/model"
 )
 
 func getIDName(basename string, id int) string {
@@ -33,5 +33,10 @@ func getMaxID(tweets []*model.Tweet) int {
 	if len(tweets) == 0 {
 		return 0
 	}
-	return tweets[len(tweets)-1].ID
+	finalID := tweets[len(tweets)-1].ID
+
+	if finalID == 0 {
+		return 0
+	}
+	return finalID - 1
 }

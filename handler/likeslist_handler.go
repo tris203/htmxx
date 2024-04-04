@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"htmxx/dummy"
+	"htmxx/db"
+	"htmxx/model"
 	"htmxx/service"
 	"htmxx/templ"
 	"net/http"
@@ -9,20 +10,44 @@ import (
 
 type LikesListHandler struct {
 	userService service.UserService
+	dbService   service.DBService
+}
+
+func shapeDBLikedTweets(tweets []db.GetLikedTweetsRow) []*model.Tweet {
+	var shapedTweets []*model.Tweet
+	for _, tweet := range tweets {
+		shapedTweets = append(shapedTweets, &model.Tweet{
+		ID:               int(tweet.Tweet.TweetID),
+		Author:           tweet.Tweet.Author,
+		Content:          tweet.Tweet.Content,
+		Created:          tweet.Tweet.Created.Time,
+		LikeCount:        int(tweet.Tweet.LikeCount),
+		LikedBySelf:      true,
+		BookmarkedBySelf: tweet.Bookmarkedbyuser,
+		})
+	}
+return shapedTweets
 }
 
 func (h *LikesListHandler) GetLikesList(w http.ResponseWriter, r *http.Request) {
 	// handle likes list
 	user := r.PathValue("author")
-	if user == "" {
-		user = h.userService.GetCurrentUser(r)
-	}
+
 	currentUser := h.userService.GetCurrentUser(r)
-	likes, err := dummy.GetLikedTweets(user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+	ctx, queries, dbConn, dberr := h.dbService.Connect()
+	if dberr != nil {
 		return
 	}
-	likesListComponent := templ.LikesList(likes, user, currentUser)
+	defer dbConn.Close()
+
+	likes, err := queries.GetLikedTweets(ctx, db.GetLikedTweetsParams{Username: user, Username_2: currentUser})
+	if err != nil {
+		// handle error
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	likesListComponent := templ.LikesList(shapeDBLikedTweets(likes), user, currentUser)
 	templ.Layout(likesListComponent, "Likes", false).Render(r.Context(), w)
 }

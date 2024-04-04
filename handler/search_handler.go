@@ -1,7 +1,9 @@
 package handler
 
 import (
-	"htmxx/dummy"
+	"fmt"
+	"htmxx/db"
+	"htmxx/model"
 	"htmxx/service"
 	"htmxx/templ"
 	"net/http"
@@ -9,10 +11,25 @@ import (
 
 type SearchHandler struct {
 	userService service.UserService
+	dbService   service.DBService
+}
+
+func shapeDBTweets(tweets []db.Tweet) []*model.Tweet {
+	// TODO: details around bools, although this is a search handler so it might be fine here due to compct rendering
+	var shapedTweets []*model.Tweet
+	for _, tweet := range tweets {
+		shapedTweets = append(shapedTweets, &model.Tweet{
+			ID:               int(tweet.TweetID),
+			Author:           tweet.Author,
+			Content:          tweet.Content,
+			Created:          tweet.Created.Time,
+		})
+	}
+	return shapedTweets
 }
 
 func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
-	// handle about
+
 	searchTerm := r.FormValue("search")
 
 	if len(searchTerm) == 0 {
@@ -21,9 +38,13 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requester := h.userService.GetCurrentUser(r)
+	ctx, queries, dbConn, dberr := h.dbService.Connect()
+	if dberr != nil {
+		return
+	}
+	defer dbConn.Close()
 
-	searchResults, err := dummy.SearchTweets(searchTerm, requester)
+	searchResults, err := queries.SearchTweets(ctx, fmt.Sprintf("%%%s%%", searchTerm))
 
 	if len(searchResults) == 0 {
 		noResultsComponent := templ.NoResults(searchTerm)
@@ -34,7 +55,7 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	searchResultsComponent := templ.SearchResult(searchTerm, searchResults)
+	searchResultsComponent := templ.SearchResult(searchTerm, shapeDBTweets(searchResults))
 	searchResultsComponent.Render(r.Context(), w)
 
 	if err != nil {
