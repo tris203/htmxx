@@ -14,11 +14,18 @@ templ SearchInput() {
 		hx-post="/search"
 		hx-target="#searchresults"
 		hx-trigger="input changed delay:500ms, search"
+		hx-indicator="#indicator"
 	/>
+	<div id="indicator" class="pt-2">
+	@ScrollDots()
+	</div>
 }
 
 templ SearchResult(searchTerm string, results []*model.Tweet) {
 	<div class="searchresults">
+	<span
+	class="htmx-indicator"
+	>Searching</span>
 		<h1>Search Results for { searchTerm }</h1>
 		for _, tweet := range results {
 			@Tweet(tweet, true)

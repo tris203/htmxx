@@ -6,23 +6,7 @@ import (
 )
 
 templ likes(tweet *model.Tweet) {
-	<button
-		hx-ext="back-to-the-future"
-		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
-		hx-post={ getStringURL("like", tweet.ID) }
-		hx-target={ getHXSelector("like-count", tweet.ID) }
-		hx-swap="innerHTML"
-		type="button"
-	>
-		@Heart(tweet.ID, tweet.LikedBySelf, false)
-		<span
-			id={ getIDName("like-count", tweet.ID) }
-			sse-swap={ getIDName("like-count", tweet.ID) }
-			class="ml-1 tabular-nums"
-		>
-			{ fmt.Sprintf("%d", tweet.LikeCount) }
-		</span>
-	</button>
+	@Heart(tweet.ID, tweet.LikedBySelf, tweet.LikeCount, false)
 	<button
 		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
 	>
@@ -64,12 +48,7 @@ templ likes(tweet *model.Tweet) {
 		</svg>
 		<span id="reply-button-text" class="hidden md:inline">Reply</span>
 	</button>
-	<button
-		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
-		hx-post={ getStringURL("bookmark", tweet.ID) }
-	>
-		@Bookmark(tweet.ID, tweet.BookmarkedBySelf)
-	</button>
+	@Bookmark(tweet.ID, tweet.BookmarkedBySelf)
 	<button
 		id={ getIDName("delete-tweet-button", tweet.ID) }
 		x-show={ fmt.Sprintf("currentUser==='%s'", tweet.Author) }
@@ -109,33 +88,40 @@ templ likes(tweet *model.Tweet) {
 }
 
 templ Bookmark(id int, bookmarkedBySelf bool) {
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="24"
-		height="24"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2"
-		stroke-linecap="round"
-		stroke-linejoin="round"
+	<button
+		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
 		if bookmarkedBySelf {
-			class="w-4 h-4 fill-black"
+			hx-delete={ getStringURL("bookmark", id) }
 		} else {
-			class="w-4 h-4"
+			hx-post={ getStringURL("bookmark", id) }
 		}
+		hx-swap="outerHTML"
+		x-data={ fmt.Sprintf("{ bookmarked: %t }", bookmarkedBySelf) }
+		x-on:click="bookmarked = !bookmarked"
 	>
-		<path
-			d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-		></path>
-	</svg>
-	<span id={ getIDName("bookmark-button-text", id) } class="hidden md:inline">
-		if bookmarkedBySelf {
-			Unbookmark
-		} else {
-			Bookmark
-		}
-	</span>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="w-4 h-4"
+			:class="bookmarked ? 'w-4 h-4 fill-black' : 'w-4 h-4'"
+		>
+			<path
+				d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+			></path>
+		</svg>
+		<span
+			id={ getIDName("bookmark-button-text", id) }
+			class="hidden md:inline"
+			x-text="bookmarked ? 'Bookmarked' : 'Bookmark'"
+		>Bookmark</span>
+	</button>
 }
 
 templ Tweet(tweet *model.Tweet, compact bool) {
@@ -164,8 +150,10 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 							</a>
 						</div>
 						<div id="tweet-{ tweet.ID }-created">
-							<span class="text-gray-600 text-xs">
-								{ fmt.Sprintf("%s", tweet.Created.Format("2006-01-02 15:04:05")) }
+							<span class="text-gray-600 text-xs" 
+							x-data={ fmt.Sprintf("{ relative: dayjs('%s').fromNow() }", tweet.Created ) }
+							x-text="relative"
+							>
 							</span>
 						</div>
 					</div>
@@ -195,31 +183,45 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 	</div>
 }
 
-templ Heart(id int, likedBySelf bool, oob bool) {
-	<svg
-		id={ getIDName("like-icon", id) }
-		if oob {
-			hx-swap-oob="true"
-		}
-		xmlns="http://www.w3.org/2000/svg"
-		width="24"
-		height="24"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2"
-		stroke-linecap="round"
-		stroke-linejoin="round"
+templ Heart(id int, likedBySelf bool, likecount int, oob bool) {
+	<button
+		hx-ext="back-to-the-future"
+		id={ getIDName("like-button", id) }
+		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
 		if likedBySelf {
-			class="w-4 h-4 fill-red-500"
+			hx-delete={ getStringURL("like", id) }
 		} else {
-			class="w-4 h-4"
+		hx-post={ getStringURL("like", id) }
 		}
+		hx-swap="outerHTML"
+		x-data={ fmt.Sprintf("{ likedBySelf: %t, likecount: %d }", likedBySelf, likecount) }
+		x-on:click="likedBySelf = !likedBySelf; if(likedBySelf) { likecount++ } else { likecount-- }"
 	>
-		<path
-			d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
-		></path>
-	</svg>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="w-4 h-4"
+			:class="likedBySelf ? 'w-4 h-4 fill-red-500' : 'w-4 h-4'"
+		>
+			<path
+				d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+			></path>
+		</svg>
+		<span
+			id={ getIDName("like-count", id) }
+			sse-swap={ getIDName("new-like-count", id) }
+			hx-swap="innerHTML"
+			class="ml-1 tabular-nums min-w-2"
+			x-text="likecount"
+		></span>
+	</button>
 }
 
 templ IndivTweet(tweet *model.Tweet) {

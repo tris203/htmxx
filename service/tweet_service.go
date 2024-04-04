@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"htmxx/db"
 	"htmxx/model"
-	"strings"
-
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
@@ -26,18 +24,18 @@ func shapeDBTweet(tweet db.GetTweetRow) *model.Tweet {
 
 }
 
-func (s *TweetService) CreateTweet(tweet *model.Tweet) (bool, error) {
+func (s *TweetService) CreateTweet(tweet *model.Tweet) (newid int64, error error) {
 	ctx, queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
-		return false, dberr
+		return 0, dberr
 	}
 	defer dbConn.Close()
 
-	err := queries.AddTweet(ctx, db.AddTweetParams{Author: tweet.Author, Content: tweet.Content})
+	newid, err := queries.AddTweet(ctx, db.AddTweetParams{Author: tweet.Author, Content: tweet.Content})
 	if err != nil {
-		return false, err
+		return 0, err
 	}
-	return true, nil
+	return newid, nil
 }
 
 func (s *TweetService) GetTweet(id int64, userid string) (*model.Tweet, error) {
@@ -65,21 +63,25 @@ func (s *TweetService) AddLike(id int64, userid string) (likeCount int, likedByS
 
 	likeErr := queries.LikeTweet(ctx, db.LikeTweetParams{TweetID: id, Username: userid})
 	if likeErr != nil {
-		// check if the error is a duplicate like error
-		if strings.Contains(likeErr.Error(), "UNIQUE constraint failed:") {
-			// this means the user already liked the tweet, so unlike it
-			likeErr = queries.UnlikeTweet(ctx, db.UnlikeTweetParams{TweetID: id, Username: userid})
-			if likeErr != nil {
-				return 0, false, likeErr
-			}
-			newLikeCount, err := queries.GetLikeCount(ctx, id)
-			return int(newLikeCount), false, err
-		} else {
-			return 0, false, fmt.Errorf("You already liked this tweet")
-		}
+		return 0, false, fmt.Errorf("You already liked this tweet")
 	}
 	newLikeCount, err := queries.GetLikeCount(ctx, id)
 	return int(newLikeCount), true, err
+}
+
+func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int, likedBySelf bool, err error) {
+	ctx, queries, dbConn, dberr := s.dbService.Connect()
+	if dberr != nil {
+		return 0, false, dberr
+	}
+	defer dbConn.Close()
+
+	likeErr := queries.UnlikeTweet(ctx, db.UnlikeTweetParams{TweetID: id, Username: userid})
+	if likeErr != nil {
+		return 0, false, likeErr
+	}
+	newLikeCount, err := queries.GetLikeCount(ctx, id)
+	return int(newLikeCount), false, err
 }
 
 func (s *TweetService) DeleteTweet(id int64, requester string) (deletedid int64, err error) {
@@ -106,16 +108,22 @@ func (s *TweetService) AddBookmark(id int64, userid string) (bookmarked bool, er
 	bookmarkErr := queries.BookmarkTweet(ctx, db.BookmarkTweetParams{TweetID: id, Username: userid})
 	if bookmarkErr != nil {
 		// check if the error is a duplicate bookmark error
-		if strings.Contains(bookmarkErr.Error(), "UNIQUE constraint failed:") {
-			// this means the user already bookmarked the tweet, so unbookmark it
-			bookmarkErr = queries.UnbookmarkTweet(ctx, db.UnbookmarkTweetParams{TweetID: id, Username: userid})
-			if bookmarkErr != nil {
-				return false, bookmarkErr
-			}
-			return false, nil
-		} else {
 			return false, bookmarkErr
 		}
-	}
+
 	return true, nil
+}
+
+func (s *TweetService) RemoveBookmark(id int64, userid string) (bookmarked bool, err error) {
+	ctx, queries, dbConn, dberr := s.dbService.Connect()
+	if dberr != nil {
+		return true, dberr
+	}
+	defer dbConn.Close()
+
+	bookmarkErr := queries.UnbookmarkTweet(ctx, db.UnbookmarkTweetParams{TweetID: id, Username: userid})
+	if bookmarkErr != nil {
+		return true, bookmarkErr
+	}
+	return false, nil
 }

@@ -1,5 +1,6 @@
-<input type=\"text\" placeholder=\"Search...\" id=\"search\" name=\"search\" class=\"p-2 border border-gray-500 rounded-lg w-full\" hx-post=\"/search\" hx-target=\"#searchresults\" hx-trigger=\"input changed delay:500ms, search\">
-<div class=\"searchresults\"><h1>Search Results for 
+<input type=\"text\" placeholder=\"Search...\" id=\"search\" name=\"search\" class=\"p-2 border border-gray-500 rounded-lg w-full\" hx-post=\"/search\" hx-target=\"#searchresults\" hx-trigger=\"input changed delay:500ms, search\" hx-indicator=\"#indicator\"><div id=\"indicator\" class=\"pt-2\">
+</div>
+<div class=\"searchresults\"><span class=\"htmx-indicator\">Searching</span><h1>Search Results for 
 </h1>
 </div>
 <div class=\"searchresults\"><h1>No results for 

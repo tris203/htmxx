@@ -13,7 +13,7 @@ templ InsertTweet(tweet *model.Tweet) {
 
 templ newTweetListener() {
 	<div id="new-tweet-placeholder" sse-swap="new-tweet" hx-target="#timeline" hx-swap="afterbegin settle:0.5s"></div>
-	@scrollDots()
+	@ScrollDots()
 }
 
 templ infiniteScroll(maxID int) {
@@ -26,12 +26,12 @@ templ infiniteScroll(maxID int) {
 			hx-swap="afterend"
 			hx-trigger="revealed"
 		>
-			@scrollDots()
+			@ScrollDots()
 		</div>
 	}
 }
 
-templ scrollDots() {
+templ ScrollDots() {
 	<div
 		class="flex gap-2 w-full justify-center invisible h-0 htmx-indicator:h-8 htmx-request:h-8 htmx-request:visible htmx-indicator:visible ease-in-out transition-all"
 	>
@@ -51,7 +51,7 @@ templ infiniteScrollUser(maxID int, username string) {
 			hx-swap="afterend"
 			hx-trigger="revealed"
 		>
-			@scrollDots()
+			@ScrollDots()
 		</div>
 	}
 }
@@ -132,7 +132,7 @@ templ CreateNewTweet() {
 			>
 				Tweet
 			</button>
-			@scrollDots()
+			@ScrollDots()
 		</form>
 	</div>
 }

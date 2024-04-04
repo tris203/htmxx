@@ -32,9 +32,10 @@ FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 WHERE tweets.tweet_id IN (SELECT tweet_id FROM bookmarks WHERE bookmarks.username = ?);
 
--- name: AddTweet :exec
+-- name: AddTweet :one
 INSERT INTO tweets (author, content)
-VALUES (?, ?);
+VALUES (?, ?)
+RETURNING tweet_id;
 
 -- name: DeleteTweet :exec
 DELETE FROM tweets

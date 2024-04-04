@@ -9,9 +9,10 @@ import (
 	"context"
 )
 
-const addTweet = `-- name: AddTweet :exec
+const addTweet = `-- name: AddTweet :one
 INSERT INTO tweets (author, content)
 VALUES (?, ?)
+RETURNING tweet_id
 `
 
 type AddTweetParams struct {
@@ -19,9 +20,11 @@ type AddTweetParams struct {
 	Content string
 }
 
-func (q *Queries) AddTweet(ctx context.Context, arg AddTweetParams) error {
-	_, err := q.db.ExecContext(ctx, addTweet, arg.Author, arg.Content)
-	return err
+func (q *Queries) AddTweet(ctx context.Context, arg AddTweetParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, addTweet, arg.Author, arg.Content)
+	var tweet_id int64
+	err := row.Scan(&tweet_id)
+	return tweet_id, err
 }
 
 const bookmarkTweet = `-- name: BookmarkTweet :exec

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type TweetHandler struct {
@@ -50,12 +51,14 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 		Content: content,
 	}
 
-	_, err := h.tweetService.CreateTweet(tweet)
+	newid, err := h.tweetService.CreateTweet(tweet)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	tweet.ID = int(newid)
+	tweet.Created = time.Now()
 	// handle success
 	var stringTmpl bytes.Buffer
 	insertTweetComponent := templ.InsertTweet(tweet)
@@ -83,9 +86,29 @@ func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle success
-	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("like-count-%d", id)})
-	heartComponent := templ.Heart(int(id), likedBySelf, true)
-	fmt.Fprintf(w, "%d", newLikeCount)
+	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("new-like-count-%d", id)})
+	heartComponent := templ.Heart(int(id), likedBySelf, int(newLikeCount), true)
+	// fmt.Fprintf(w, "%d", newLikeCount)
+	heartComponent.Render(r.Context(), w)
+}
+
+func (h *TweetHandler) RemoveLike(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	requester := h.userService.GetCurrentUser(r)
+	if err != nil {
+		// handle error
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	newLikeCount, likedBySelf, err := h.tweetService.RemoveLike(id, requester)
+	if err != nil {
+		// handle error
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// handle success
+	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("new-like-count-%d", id)})
+	heartComponent := templ.Heart(int(id), likedBySelf, int(newLikeCount), false)
 	heartComponent.Render(r.Context(), w)
 }
 

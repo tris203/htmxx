@@ -72,3 +72,23 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 	bookmarkComponent := templ.Bookmark(int(tweetID), result)
 	bookmarkComponent.Render(r.Context(), w)
 }
+
+func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request) {
+	user := h.userService.GetCurrentUser(r)
+	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	result, err := h.tweetService.RemoveBookmark(tweetID, user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	bookmarkComponent := templ.Bookmark(int(tweetID), result)
+	bookmarkComponent.Render(r.Context(), w)
+}

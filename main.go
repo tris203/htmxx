@@ -26,6 +26,7 @@ func main() {
 	router.HandleFunc("GET /tweet/{id}", tweetHandler.GetTweet)
 	router.HandleFunc("DELETE /tweet/{id}", tweetHandler.DeleteTweet)
 	router.HandleFunc("POST /like/{id}", tweetHandler.AddLike)
+	router.HandleFunc("DELETE /like/{id}", tweetHandler.RemoveLike)
 	router.HandleFunc("POST /tweet", tweetHandler.CreateTweet)
 	router.Handle("GET /static/", http.StripPrefix("/static/", staticFS))
 	router.HandleFunc("GET /events", sseEventsHandler.EventsHandler)
@@ -37,6 +38,7 @@ func main() {
 	router.HandleFunc("GET /likes/{author}/", likesListHandler.GetLikesList)
 	router.HandleFunc("GET /bookmarks/", bookmarkHandler.GetBookmark)
 	router.HandleFunc("POST /bookmark/{id}", bookmarkHandler.AddBookmark)
+	router.HandleFunc("DELETE /bookmark/{id}", bookmarkHandler.RemoveBookmark)
 	router.HandleFunc("GET /profile/", profileHandler.GetProfile)
 
 
