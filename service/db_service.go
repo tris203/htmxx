@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"database/sql"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"htmxx/db"
@@ -18,7 +17,7 @@ func (s *DBService) Connect() (context.Context, *db.Queries, *sql.DB, error) {
 	if url == "" {
 		panic("HTMXX_DB_URL must be set")
 	}
-	dbConn, err := sql.Open("libsql", fmt.Sprintf("libsql://%s", url))
+	dbConn, err := sql.Open("libsql", url)
 	if err != nil {
 		return nil, nil, nil, err
 	}
