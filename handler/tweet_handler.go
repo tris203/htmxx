@@ -34,7 +34,7 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle tweet
-	tweetComponent := templ.IndivTweet(tweet)
+	tweetComponent := templ.IndivTweet(tweet, requester)
 	err = templ.Layout(tweetComponent, "Tweet", false).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

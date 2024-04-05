@@ -38,7 +38,8 @@
 \" x-on:click=\"likedBySelf = !likedBySelf; if(likedBySelf) { likecount++ } else { likecount-- }\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\" :class=\"likedBySelf ? &#39;w-4 h-4 fill-red-500&#39; : &#39;w-4 h-4&#39;\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"></path></svg> <span id=\"
 \" sse-swap=\"
 \" hx-swap=\"innerHTML\" class=\"ml-1 tabular-nums min-w-2\" x-text=\"likecount\"></span></button>
-<div id=\"timeline\" class=\"grid grid-cols-1 gap-2\">
+<div id=\"timeline\" class=\"grid grid-cols-1 gap-2\" x-data=\"
+\">
 </div>
 <div class=\"flex items-center pt-4 pb-2\"><a onclick=\"window.history.back()\" class=\"flex items-center gap-2 text-sm font-medium text-accent hover:cursor-pointer\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\"><path d=\"M15 18l-6-6 6-6\"></path></svg> <span>Back</span></a><div class=\"flex-1 text-center-wrap break-all\"><h2 class=\"text-2xl font-bold text-center pb-2\">
 </h2></div></div>

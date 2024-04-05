@@ -224,9 +224,11 @@ templ Heart(id int, likedBySelf bool, likecount int, oob bool) {
 	</button>
 }
 
-templ IndivTweet(tweet *model.Tweet) {
+templ IndivTweet(tweet *model.Tweet, currentUser string) {
 	@TopBar(tweet.Author, "Tweet")
-	<div id="timeline" class="grid grid-cols-1 gap-2">
+	<div id="timeline" class="grid grid-cols-1 gap-2"
+	x-data={ fmt.Sprintf("{ currentUser: '%s' }", currentUser) }
+	>
 		@Tweet(tweet, false)
 	</div>
 }
