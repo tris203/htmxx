@@ -57,7 +57,7 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	tweet.ID = int(newid)
+	tweet.ID = newid
 	tweet.Created = time.Now().UTC()
 	// handle success
 	var stringTmpl bytes.Buffer
@@ -87,7 +87,7 @@ func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 	}
 	// handle success
 	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("new-like-count-%d", id)})
-	heartComponent := templ.Heart(int(id), likedBySelf, int(newLikeCount), true)
+	heartComponent := templ.Heart(id, likedBySelf, newLikeCount, true)
 	// fmt.Fprintf(w, "%d", newLikeCount)
 	heartComponent.Render(r.Context(), w)
 }
@@ -108,7 +108,7 @@ func (h *TweetHandler) RemoveLike(w http.ResponseWriter, r *http.Request) {
 	}
 	// handle success
 	h.eventsService.AddMessage(service.Event{Data: fmt.Sprintf("%d", newLikeCount), EventName: fmt.Sprintf("new-like-count-%d", id)})
-	heartComponent := templ.Heart(int(id), likedBySelf, int(newLikeCount), false)
+	heartComponent := templ.Heart(id, likedBySelf, newLikeCount, false)
 	heartComponent.Render(r.Context(), w)
 }
 
@@ -127,7 +127,7 @@ func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// handle success
-	deleteTweetComponent := templ.DeletedTweet(int(deletedID))
+	deleteTweetComponent := templ.DeletedTweet(deletedID)
 	deleteTweetComponent.Render(r.Context(), w)
 
 }

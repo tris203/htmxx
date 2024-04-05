@@ -19,7 +19,7 @@ func shapeDBTweets(tweets []db.Tweet) []*model.Tweet {
 	var shapedTweets []*model.Tweet
 	for _, tweet := range tweets {
 		shapedTweets = append(shapedTweets, &model.Tweet{
-			ID:               int(tweet.TweetID),
+			ID:               tweet.TweetID,
 			Author:           tweet.Author,
 			Content:          tweet.Content,
 			Created:          tweet.Created.Time,

@@ -5,15 +5,15 @@ import (
 	"htmxx/model"
 )
 
-func getIDName(basename string, id int) string {
+func getIDName(basename string, id int64) string {
 	return fmt.Sprintf("%s-%d", basename, id)
 }
 
-func getIDURL(basename string, id int) string {
+func getIDURL(basename string, id int64) string {
 	return fmt.Sprintf("/%s/%d", basename, id)
 }
 
-func getStringURL(basename string, arg int) string {
+func getStringURL(basename string, arg int64) string {
 	return fmt.Sprintf("/%s/%d", basename, arg)
 }
 
@@ -25,11 +25,11 @@ func getLikesURL(username string) string {
 	return fmt.Sprintf("/likes/%s", username)
 }
 
-func getHXSelector(basename string, id int) string {
+func getHXSelector(basename string, id int64) string {
 	return fmt.Sprintf("#%s-%d", basename, id)
 }
 
-func getMaxID(tweets []*model.Tweet) int {
+func getMaxID(tweets []*model.Tweet) int64 {
 	if len(tweets) == 0 {
 		return 0
 	}

@@ -13,11 +13,11 @@ func shapeDBTimeline(tweets []db.GetTimelineRow) []*model.Tweet {
 	var shapedTweets []*model.Tweet
 	for _, tweet := range tweets {
 		shapedTweets = append(shapedTweets, &model.Tweet{
-			ID:               int(tweet.Tweet.TweetID),
+			ID:               tweet.Tweet.TweetID,
 			Author:           tweet.Tweet.Author,
 			Content:          tweet.Tweet.Content,
 			Created:          tweet.Tweet.Created.Time,
-			LikeCount:        int(tweet.Tweet.LikeCount),
+			LikeCount:        tweet.Tweet.LikeCount,
 			LikedBySelf:      tweet.Likedbyuser,
 			BookmarkedBySelf: tweet.Bookmarkedbyuser,
 		})

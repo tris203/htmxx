@@ -16,7 +16,7 @@ templ newTweetListener() {
 	@ScrollDots()
 }
 
-templ infiniteScroll(maxID int) {
+templ infiniteScroll(maxID int64) {
 	if maxID > 0 {
 		<div
 			id="inf-scroll"
@@ -41,7 +41,7 @@ templ ScrollDots() {
 	</div>
 }
 
-templ infiniteScrollUser(maxID int, username string) {
+templ infiniteScrollUser(maxID int64, username string) {
 	if maxID > 0 {
 		<div
 			id="inf-scroll"
@@ -68,7 +68,7 @@ templ Timeline(tweets []*model.Tweet, currentUser string) {
 	</div>
 }
 
-templ DeletedTweet(id int) {
+templ DeletedTweet(id int64) {
 	<div id={ getIDName("tweet", id) } remove-me="2.1s" hx-ext="remove-me,back-to-the-future" hx-swap-oob="outerHTML">
 		<div
 			class="border border-gray-200 rounded-lg p-4 htmx-added:opacity-100 opacity-0 transition-opacity duration-1000 delay-1000"

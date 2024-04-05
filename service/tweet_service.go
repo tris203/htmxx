@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"htmxx/db"
 	"htmxx/model"
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type TweetService struct {
@@ -13,11 +13,11 @@ type TweetService struct {
 
 func shapeDBTweet(tweet db.GetTweetRow) *model.Tweet {
 	return &model.Tweet{
-		ID:               int(tweet.Tweet.TweetID),
+		ID:               tweet.Tweet.TweetID,
 		Author:           tweet.Tweet.Author,
 		Content:          tweet.Tweet.Content,
 		Created:          tweet.Tweet.Created.Time,
-		LikeCount:        int(tweet.Tweet.LikeCount),
+		LikeCount:        tweet.Tweet.LikeCount,
 		LikedBySelf:      tweet.Likedbyuser,
 		BookmarkedBySelf: tweet.Bookmarkedbyuser,
 	}
@@ -54,7 +54,7 @@ func (s *TweetService) GetTweet(id int64, userid string) (*model.Tweet, error) {
 	return shapeDBTweet(tweet), nil
 }
 
-func (s *TweetService) AddLike(id int64, userid string) (likeCount int, likedBySelf bool, err error) {
+func (s *TweetService) AddLike(id int64, userid string) (likeCount int64, likedBySelf bool, err error) {
 	ctx, queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, false, dberr
@@ -66,10 +66,10 @@ func (s *TweetService) AddLike(id int64, userid string) (likeCount int, likedByS
 		return 0, false, fmt.Errorf("You already liked this tweet")
 	}
 	newLikeCount, err := queries.GetLikeCount(ctx, id)
-	return int(newLikeCount), true, err
+	return newLikeCount, true, err
 }
 
-func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int, likedBySelf bool, err error) {
+func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int64, likedBySelf bool, err error) {
 	ctx, queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, false, dberr
@@ -81,7 +81,7 @@ func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int, liked
 		return 0, false, likeErr
 	}
 	newLikeCount, err := queries.GetLikeCount(ctx, id)
-	return int(newLikeCount), false, err
+	return newLikeCount, false, err
 }
 
 func (s *TweetService) DeleteTweet(id int64, requester string) (deletedid int64, err error) {
@@ -108,8 +108,8 @@ func (s *TweetService) AddBookmark(id int64, userid string) (bookmarked bool, er
 	bookmarkErr := queries.BookmarkTweet(ctx, db.BookmarkTweetParams{TweetID: id, Username: userid})
 	if bookmarkErr != nil {
 		// check if the error is a duplicate bookmark error
-			return false, bookmarkErr
-		}
+		return false, bookmarkErr
+	}
 
 	return true, nil
 }

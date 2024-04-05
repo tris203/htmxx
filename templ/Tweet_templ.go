@@ -103,7 +103,7 @@ func likes(tweet *model.Tweet) templ.Component {
 	})
 }
 
-func Bookmark(id int, bookmarkedBySelf bool) templ.Component {
+func Bookmark(id int64, bookmarkedBySelf bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -360,7 +360,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 	})
 }
 
-func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
+func Heart(id int64, likedBySelf bool, likecount int64, oob bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

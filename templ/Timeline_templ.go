@@ -75,7 +75,7 @@ func newTweetListener() templ.Component {
 	})
 }
 
-func infiniteScroll(maxID int) templ.Component {
+func infiniteScroll(maxID int64) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -146,7 +146,7 @@ func ScrollDots() templ.Component {
 	})
 }
 
-func infiniteScrollUser(maxID int, username string) templ.Component {
+func infiniteScrollUser(maxID int64, username string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -256,7 +256,7 @@ func Timeline(tweets []*model.Tweet, currentUser string) templ.Component {
 	})
 }
 
-func DeletedTweet(id int) templ.Component {
+func DeletedTweet(id int64) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

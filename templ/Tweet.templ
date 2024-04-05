@@ -87,7 +87,7 @@ templ likes(tweet *model.Tweet) {
 	</button>
 }
 
-templ Bookmark(id int, bookmarkedBySelf bool) {
+templ Bookmark(id int64, bookmarkedBySelf bool) {
 	<button
 		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
 		if bookmarkedBySelf {
@@ -183,7 +183,7 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 	</div>
 }
 
-templ Heart(id int, likedBySelf bool, likecount int, oob bool) {
+templ Heart(id int64, likedBySelf bool, likecount int64, oob bool) {
 	<button
 		hx-ext="back-to-the-future"
 		id={ getIDName("like-button", id) }
