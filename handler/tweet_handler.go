@@ -58,7 +58,7 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tweet.ID = int(newid)
-	tweet.Created = time.Now()
+	tweet.Created = time.Now().UTC()
 	// handle success
 	var stringTmpl bytes.Buffer
 	insertTweetComponent := templ.InsertTweet(tweet)
