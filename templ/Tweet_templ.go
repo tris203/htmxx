@@ -47,7 +47,7 @@ func likes(tweet *model.Tweet) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("delete-tweet-button", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 53, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 53, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -60,7 +60,7 @@ func likes(tweet *model.Tweet) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("currentUser==='%s'", tweet.Author))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 54, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 54, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -73,7 +73,7 @@ func likes(tweet *model.Tweet) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(getIDURL("tweet", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 56, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 56, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -86,7 +86,7 @@ func likes(tweet *model.Tweet) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(getHXSelector("tweet", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 57, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 57, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -128,7 +128,7 @@ func Bookmark(id int, bookmarkedBySelf bool) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(getStringURL("bookmark", id))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 94, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 94, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -146,7 +146,7 @@ func Bookmark(id int, bookmarkedBySelf bool) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(getStringURL("bookmark", id))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 96, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 96, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -164,7 +164,7 @@ func Bookmark(id int, bookmarkedBySelf bool) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("{ bookmarked: %t }", bookmarkedBySelf))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 99, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 99, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -177,7 +177,7 @@ func Bookmark(id int, bookmarkedBySelf bool) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("bookmark-button-text", id))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 120, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 120, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -214,7 +214,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("tweet", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 129, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 129, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -236,7 +236,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("tweet-author", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 145, Col: 51}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 145, Col: 51}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -258,7 +258,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", tweet.Author))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 148, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 148, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -271,7 +271,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("{ relative: dayjs('%s').fromNow() }", tweet.Created))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 154, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 154, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
@@ -284,7 +284,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(getIDURL("tweet", tweet.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 162, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 162, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -302,7 +302,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(shortenTweet(tweet))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 168, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 168, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
@@ -320,7 +320,7 @@ func Tweet(tweet *model.Tweet, compact bool) templ.Component {
 			var templ_7745c5c3_Var20 string
 			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(tweet.Content)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 170, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 170, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
@@ -380,7 +380,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("like-button", id))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 189, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 189, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -398,7 +398,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(getStringURL("like", id))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 192, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 192, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -416,7 +416,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(getStringURL("like", id))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 194, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 194, Col: 36}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -434,7 +434,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("{ likedBySelf: %t, likecount: %d }", likedBySelf, likecount))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 197, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 197, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
@@ -447,7 +447,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("like-count", id))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 218, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 218, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
@@ -460,7 +460,7 @@ func Heart(id int, likedBySelf bool, likecount int, oob bool) templ.Component {
 		var templ_7745c5c3_Var27 string
 		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(getIDName("new-like-count", id))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 219, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 219, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 		if templ_7745c5c3_Err != nil {
@@ -533,7 +533,7 @@ func TopBar(item string, desc string) templ.Component {
 		var templ_7745c5c3_Var30 string
 		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s's %s", item, desc))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templ/Tweet.templ`, Line: 257, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `Tweet.templ`, Line: 257, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 		if templ_7745c5c3_Err != nil {
