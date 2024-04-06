@@ -10,7 +10,6 @@ import (
 )
 
 type SearchHandler struct {
-	userService service.UserService
 	dbService   service.DBService
 }
 

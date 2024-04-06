@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"htmxx/handler"
+	"htmxx/middleware"
 	"net/http"
 	"os"
 )
@@ -41,15 +42,13 @@ func main() {
 	router.HandleFunc("DELETE /bookmark/{id}", bookmarkHandler.RemoveBookmark)
 	router.HandleFunc("GET /profile/", profileHandler.GetProfile)
 
-
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
 	}
 	server := http.Server{
 		Addr:    ":" + port,
-		Handler: router,
+		Handler: middleware.Logging(middleware.GetUser(router)),
 	}
 
 	fmt.Printf("Listening on port %s\n", port)

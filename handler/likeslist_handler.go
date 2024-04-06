@@ -9,7 +9,6 @@ import (
 )
 
 type LikesListHandler struct {
-	userService service.UserService
 	dbService   service.DBService
 }
 
@@ -33,7 +32,7 @@ func (h *LikesListHandler) GetLikesList(w http.ResponseWriter, r *http.Request) 
 	// handle likes list
 	user := r.PathValue("author")
 
-	currentUser := h.userService.GetCurrentUser(r)
+	currentUser := r.Context().Value("user").(string)
 
 	ctx, queries, dbConn, dberr := h.dbService.Connect()
 	if dberr != nil {

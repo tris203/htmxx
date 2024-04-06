@@ -10,11 +10,10 @@ import (
 
 type TimelineHandler struct {
 	timelineService service.TimelineService
-	userService     service.UserService
 }
 
 func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
-var user = h.userService.GetCurrentUser(r)
+var user = r.Context().Value("user").(string)
 	minid, iderr := strconv.ParseInt(r.PathValue("minid"), 10, 64)
 	if iderr != nil {
 		minid = 9223372036854775807
@@ -36,7 +35,7 @@ var user = h.userService.GetCurrentUser(r)
 }
 
 func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
-	requster := h.userService.GetCurrentUser(r)
+	requster := r.Context().Value("user").(string)
 	author := r.PathValue("author")
 	minid, err := strconv.ParseInt(r.PathValue("minid"), 10, 64)
 	if err != nil {

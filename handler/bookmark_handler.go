@@ -10,7 +10,6 @@ import (
 )
 
 type BookmarkHandler struct {
-	userService service.UserService
 	tweetService service.TweetService
 	dbService   service.DBService
 }
@@ -33,7 +32,7 @@ return shapedTweets
 }
 
 func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
-	user := h.userService.GetCurrentUser(r)
+	user := r.Context().Value("user").(string)
 
 
 	ctx, queries, dbConn, dberr := h.dbService.Connect()
@@ -54,7 +53,7 @@ func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
-	user := h.userService.GetCurrentUser(r)
+	user := r.Context().Value("user").(string)
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {
@@ -74,7 +73,7 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request) {
-	user := h.userService.GetCurrentUser(r)
+	user := r.Context().Value("user").(string)
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {

@@ -15,7 +15,6 @@ import (
 type TweetHandler struct {
 	tweetService  service.TweetService
 	eventsService service.EventsService
-	userService   service.UserService
 }
 
 func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +24,7 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid tweet ID", http.StatusBadRequest)
 		return
 	}
-	requester := h.userService.GetCurrentUser(r)
+	requester := r.Context().Value("user").(string)
 	tweet, err := h.tweetService.GetTweet(id, requester)
 	if err != nil {
 		// handle error
@@ -44,7 +43,7 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 	var content = r.FormValue("content")
 	// envrypt the ip
-	author := h.userService.GetCurrentUser(r)
+	author := r.Context().Value("user").(string)
 
 	tweet := &model.Tweet{
 		Author:  author,
@@ -73,7 +72,7 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 
 func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	requester := h.userService.GetCurrentUser(r)
+	requester := r.Context().Value("user").(string)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -94,7 +93,7 @@ func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 
 func (h *TweetHandler) RemoveLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-	requester := h.userService.GetCurrentUser(r)
+	requester := r.Context().Value("user").(string)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -119,7 +118,7 @@ func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	requester := h.userService.GetCurrentUser(r)
+	requester := r.Context().Value("user").(string)
 	deletedID, err := h.tweetService.DeleteTweet(id, requester)
 	if err != nil {
 		// handle error
