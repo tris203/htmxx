@@ -20,6 +20,7 @@ func main() {
 	bookmarkHandler := handler.BookmarkHandler{}
 	profileHandler := handler.ProfileHandler{}
 	staticFS := http.FileServer(http.Dir("./static"))
+	router.HandleFunc("GET /favicon.ico", http.NotFound)
 	router.HandleFunc("GET /", timelineHandler.GetTimeline)
 	router.HandleFunc("GET /{author}/", timelineHandler.GetUserTimeline)
 	router.HandleFunc("GET /page/{author}/{minid}/", timelineHandler.GetUserTimeline)
