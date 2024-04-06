@@ -14,7 +14,7 @@ func getIDURL(basename string, id int64) string {
 }
 
 func getStringURL(basename string, arg int64) string {
-	return fmt.Sprintf("/%s/%d", basename, arg)
+	return fmt.Sprintf("/%s/%d/", basename, arg)
 }
 
 func getProfileURL(username string) string {
@@ -22,7 +22,7 @@ func getProfileURL(username string) string {
 }
 
 func getLikesURL(username string) string {
-	return fmt.Sprintf("/likes/%s", username)
+	return fmt.Sprintf("/likes/%s/", username)
 }
 
 func getHXSelector(basename string, id int64) string {
