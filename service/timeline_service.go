@@ -25,18 +25,34 @@ func shapeDBTimeline(tweets []db.GetTimelineRow) []*model.Tweet {
 	return shapedTweets
 }
 
+func shapeDBAllTimeline(tweets []db.GetAllTimelineRow) []*model.Tweet {
+	var shapedTweets []*model.Tweet
+	for _, tweet := range tweets {
+		shapedTweets = append(shapedTweets, &model.Tweet{
+			ID:               tweet.Tweet.TweetID,
+			Author:           tweet.Tweet.Author,
+			Content:          tweet.Tweet.Content,
+			Created:          tweet.Tweet.Created.Time,
+			LikeCount:        tweet.Tweet.LikeCount,
+			LikedBySelf:      tweet.Likedbyuser,
+			BookmarkedBySelf: tweet.Bookmarkedbyuser,
+		})
+	}
+	return shapedTweets
+}
+
 func (s *TimelineService) GetTimeline(minid int64, currentUser string) ([]*model.Tweet, error) {
 	ctx, queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return nil, dberr
 	}
 	defer dbConn.Close()
-	tweet, err := queries.GetTimeline(ctx, db.GetTimelineParams{TweetID: minid, Author: "%", Username: currentUser, Username_2: currentUser})
+	tweet, err := queries.GetAllTimeline(ctx, db.GetAllTimelineParams{TweetID: minid, Username: currentUser, Username_2: currentUser})
 
 	if err != nil {
 		return nil, err
 	}
-	return shapeDBTimeline(tweet), nil
+	return shapeDBAllTimeline(tweet), nil
 }
 
 func (s *TimelineService) GetUserTimeline(author string, minid int64, currentUser string) ([]*model.Tweet, error) {

@@ -8,6 +8,16 @@ AND tweets.tweet_id < ?
 ORDER BY tweets.tweet_id DESC
 LIMIT 10;
 
+
+-- name: GetAllTimeline :many
+SELECT sqlc.embed(tweets), likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+FROM tweets
+LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
+LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
+WHERE tweets.tweet_id < ?
+ORDER BY tweets.tweet_id DESC
+LIMIT 10;
+
 -- name: GetTweetLikers :many
 SELECT username FROM likes
 WHERE tweet_id = ?;

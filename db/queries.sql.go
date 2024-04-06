@@ -58,6 +58,59 @@ func (q *Queries) DeleteTweet(ctx context.Context, arg DeleteTweetParams) error 
 	return err
 }
 
+const getAllTimeline = `-- name: GetAllTimeline :many
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+FROM tweets
+LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
+LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
+WHERE tweets.tweet_id < ?
+ORDER BY tweets.tweet_id DESC
+LIMIT 10
+`
+
+type GetAllTimelineParams struct {
+	Username   string
+	Username_2 string
+	TweetID    int64
+}
+
+type GetAllTimelineRow struct {
+	Tweet            Tweet
+	Likedbyuser      bool
+	Bookmarkedbyuser bool
+}
+
+func (q *Queries) GetAllTimeline(ctx context.Context, arg GetAllTimelineParams) ([]GetAllTimelineRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllTimeline, arg.Username, arg.Username_2, arg.TweetID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllTimelineRow
+	for rows.Next() {
+		var i GetAllTimelineRow
+		if err := rows.Scan(
+			&i.Tweet.TweetID,
+			&i.Tweet.Author,
+			&i.Tweet.Content,
+			&i.Tweet.Created,
+			&i.Tweet.LikeCount,
+			&i.Likedbyuser,
+			&i.Bookmarkedbyuser,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getBookmarkedTweets = `-- name: GetBookmarkedTweets :many
 SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser
 FROM tweets
