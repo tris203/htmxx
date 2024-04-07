@@ -80,7 +80,7 @@ templ DeletedTweet(id int64) {
 
 templ UserTimeline(tweets []*model.Tweet, username string, currentUser string) {
 	@TopBar(username, "Timeline")
-	<ul class="grid grid-cols-2 p-x-4" x-data="{ currentTab: 'Timeline' }">
+	<ul class="grid grid-cols-2 px-4" x-data="{ currentTab: 'Timeline' }">
 		<li
 			class="w-full text-white font-bold py-2 px-4 rounded-lg cursor-pointer"
 			:class="{ 'bg-blue-500': currentTab === 'Timeline' }"
@@ -88,6 +88,7 @@ templ UserTimeline(tweets []*model.Tweet, username string, currentUser string) {
 			hx-get={ getProfileURL(username) }
 			hx-select="#timeline"
 			hx-target="#timeline"
+			hx-swap="outerHTML"
 		>
 			Posts
 		</li>
@@ -98,6 +99,7 @@ templ UserTimeline(tweets []*model.Tweet, username string, currentUser string) {
 			hx-get={ getLikesURL(username) }
 			hx-select="#timeline"
 			hx-target="#timeline"
+			hx-swap="outerHTML"
 		>
 			Likes
 		</li>
