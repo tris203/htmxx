@@ -37,13 +37,13 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx, queries, dbConn, dberr := h.dbService.Connect()
+	queries, dbConn, dberr := h.dbService.Connect()
 	if dberr != nil {
 		return
 	}
 	defer dbConn.Close()
 
-	searchResults, err := queries.SearchTweets(ctx, fmt.Sprintf("%%%s%%", searchTerm))
+	searchResults, err := queries.SearchTweets(r.Context(), fmt.Sprintf("%%%s%%", searchTerm))
 
 	if len(searchResults) == 0 {
 		noResultsComponent := templ.NoResults(searchTerm)

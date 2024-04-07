@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"htmxx/db"
 	"htmxx/model"
 )
@@ -41,8 +42,9 @@ func shapeDBAllTimeline(tweets []db.GetAllTimelineRow) []*model.Tweet {
 	return shapedTweets
 }
 
-func (s *TimelineService) GetTimeline(minid int64, currentUser string) ([]*model.Tweet, error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TimelineService) GetTimeline(minid int64, ctx context.Context) ([]*model.Tweet, error) {
+	currentUser := ctx.Value("user").(string)
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return nil, dberr
 	}
@@ -55,8 +57,9 @@ func (s *TimelineService) GetTimeline(minid int64, currentUser string) ([]*model
 	return shapeDBAllTimeline(tweet), nil
 }
 
-func (s *TimelineService) GetUserTimeline(author string, minid int64, currentUser string) ([]*model.Tweet, error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TimelineService) GetUserTimeline(author string, minid int64, ctx context.Context) ([]*model.Tweet, error) {
+	currentUser := ctx.Value("user").(string)
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return nil, dberr
 	}

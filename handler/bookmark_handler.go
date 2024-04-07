@@ -35,13 +35,13 @@ func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(string)
 
 
-	ctx, queries, dbConn, dberr := h.dbService.Connect()
+	queries, dbConn, dberr := h.dbService.Connect()
 	if dberr != nil {
 		return
 	}
 	defer dbConn.Close()
 
-	bookmarks, err := queries.GetBookmarkedTweets(ctx, db.GetBookmarkedTweetsParams{Username: user, Username_2: user})
+	bookmarks, err := queries.GetBookmarkedTweets(r.Context(), db.GetBookmarkedTweetsParams{Username: user, Username_2: user})
 	if err != nil {
 		// handle error
 		http.Error(w, "User not found", http.StatusNotFound)
@@ -53,7 +53,6 @@ func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(string)
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {
@@ -61,7 +60,7 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := h.tweetService.AddBookmark(tweetID, user)
+	result, err := h.tweetService.AddBookmark(tweetID, r.Context())
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -73,7 +72,6 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value("user").(string)
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {
@@ -81,7 +79,7 @@ func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	result, err := h.tweetService.RemoveBookmark(tweetID, user)
+	result, err := h.tweetService.RemoveBookmark(tweetID, r.Context())
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -1,10 +1,12 @@
 package service
 
 import (
+	"context"
 	"fmt"
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"htmxx/db"
 	"htmxx/model"
+
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type TweetService struct {
@@ -24,8 +26,8 @@ func shapeDBTweet(tweet db.GetTweetRow) *model.Tweet {
 
 }
 
-func (s *TweetService) CreateTweet(tweet *model.Tweet) (newid int64, error error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) CreateTweet(tweet *model.Tweet, ctx context.Context) (newid int64, error error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, dberr
 	}
@@ -38,12 +40,14 @@ func (s *TweetService) CreateTweet(tweet *model.Tweet) (newid int64, error error
 	return newid, nil
 }
 
-func (s *TweetService) GetTweet(id int64, userid string) (*model.Tweet, error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) GetTweet(id int64, ctx context.Context) (*model.Tweet, error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return nil, dberr
 	}
 	defer dbConn.Close()
+
+	userid := ctx.Value("user").(string)
 
 	tweet, err := queries.GetTweet(ctx, db.GetTweetParams{TweetID: id, Username: userid, Username_2: userid})
 
@@ -54,12 +58,14 @@ func (s *TweetService) GetTweet(id int64, userid string) (*model.Tweet, error) {
 	return shapeDBTweet(tweet), nil
 }
 
-func (s *TweetService) AddLike(id int64, userid string) (likeCount int64, likedBySelf bool, err error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) AddLike(id int64, ctx context.Context) (likeCount int64, likedBySelf bool, err error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, false, dberr
 	}
 	defer dbConn.Close()
+
+	userid := ctx.Value("user").(string)
 
 	likeErr := queries.LikeTweet(ctx, db.LikeTweetParams{TweetID: id, Username: userid})
 	if likeErr != nil {
@@ -69,12 +75,14 @@ func (s *TweetService) AddLike(id int64, userid string) (likeCount int64, likedB
 	return newLikeCount, true, err
 }
 
-func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int64, likedBySelf bool, err error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) RemoveLike(id int64, ctx context.Context) (likeCount int64, likedBySelf bool, err error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, false, dberr
 	}
 	defer dbConn.Close()
+
+	userid := ctx.Value("user").(string)
 
 	likeErr := queries.UnlikeTweet(ctx, db.UnlikeTweetParams{TweetID: id, Username: userid})
 	if likeErr != nil {
@@ -84,12 +92,14 @@ func (s *TweetService) RemoveLike(id int64, userid string) (likeCount int64, lik
 	return newLikeCount, false, err
 }
 
-func (s *TweetService) DeleteTweet(id int64, requester string) (deletedid int64, err error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) DeleteTweet(id int64, ctx context.Context) (deletedid int64, err error) {
+queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return 0, dberr
 	}
 	defer dbConn.Close()
+
+	requester := ctx.Value("user").(string)
 
 	delerr := queries.DeleteTweet(ctx, db.DeleteTweetParams{TweetID: id, Author: requester})
 	if delerr != nil {
@@ -98,12 +108,14 @@ func (s *TweetService) DeleteTweet(id int64, requester string) (deletedid int64,
 	return id, nil
 }
 
-func (s *TweetService) AddBookmark(id int64, userid string) (bookmarked bool, err error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) AddBookmark(id int64, ctx context.Context) (bookmarked bool, err error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return false, dberr
 	}
 	defer dbConn.Close()
+
+	userid := ctx.Value("user").(string)
 
 	bookmarkErr := queries.BookmarkTweet(ctx, db.BookmarkTweetParams{TweetID: id, Username: userid})
 	if bookmarkErr != nil {
@@ -114,12 +126,14 @@ func (s *TweetService) AddBookmark(id int64, userid string) (bookmarked bool, er
 	return true, nil
 }
 
-func (s *TweetService) RemoveBookmark(id int64, userid string) (bookmarked bool, err error) {
-	ctx, queries, dbConn, dberr := s.dbService.Connect()
+func (s *TweetService) RemoveBookmark(id int64, ctx context.Context) (bookmarked bool, err error) {
+	queries, dbConn, dberr := s.dbService.Connect()
 	if dberr != nil {
 		return true, dberr
 	}
 	defer dbConn.Close()
+
+	userid := ctx.Value("user").(string)
 
 	bookmarkErr := queries.UnbookmarkTweet(ctx, db.UnbookmarkTweetParams{TweetID: id, Username: userid})
 	if bookmarkErr != nil {

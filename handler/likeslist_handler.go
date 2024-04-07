@@ -34,13 +34,13 @@ func (h *LikesListHandler) GetLikesList(w http.ResponseWriter, r *http.Request) 
 
 	currentUser := r.Context().Value("user").(string)
 
-	ctx, queries, dbConn, dberr := h.dbService.Connect()
+	queries, dbConn, dberr := h.dbService.Connect()
 	if dberr != nil {
 		return
 	}
 	defer dbConn.Close()
 
-	likes, err := queries.GetLikedTweets(ctx, db.GetLikedTweetsParams{Username: user, Username_2: currentUser})
+	likes, err := queries.GetLikedTweets(r.Context(), db.GetLikedTweetsParams{Username: user, Username_2: currentUser})
 	if err != nil {
 		// handle error
 		http.Error(w, "User not found", http.StatusNotFound)
