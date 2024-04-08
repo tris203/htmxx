@@ -150,10 +150,11 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 							</a>
 						</div>
 						<div id="tweet-{ tweet.ID }-created">
-							<span class="text-gray-600 text-xs" 
+							<span class="text-gray-600 text-xs h-12"
 							x-data={ fmt.Sprintf("{ relative: dayjs('%s').fromNow() }", tweet.Created ) }
 							x-text="relative"
 							>
+							&nbsp;
 							</span>
 						</div>
 					</div>

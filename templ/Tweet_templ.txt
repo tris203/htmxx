@@ -17,8 +17,8 @@
 \"><img class=\"aspect-square h-full w-full\" alt=\"username\" src=\"/static/placeholder-user.jpg\"></a></span><div class=\"flex-col flex-1\"><div class=\"grid gap 1.5 text-sm\"><div class=\"flex-col w-full items-center gap-1.5\"><div id=\"
 \"><a href=\"
 \"><span class=\"font-medium\">
-</span></a></div><div id=\"tweet-{ tweet.ID }-created\"><span class=\"text-gray-600 text-xs\" x-data=\"
-\" x-text=\"relative\"></span></div></div><div class=\"text-sm\" hx-get=\"
+</span></a></div><div id=\"tweet-{ tweet.ID }-created\"><span class=\"text-gray-600 text-xs h-12\" x-data=\"
+\" x-text=\"relative\">&nbsp;</span></div></div><div class=\"text-sm\" hx-get=\"
 \" hx-target=\"body\" hx-swap=\"outerHTML\" hx-push-url=\"true\">
 <article class=\"prose\" hx-disable>
 </article>
