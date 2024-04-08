@@ -1,4 +1,5 @@
-package handler
+package main
+
 
 import (
 	"htmxx/templ"
@@ -8,7 +9,7 @@ import (
 type AboutHandler struct {
 }
 
-func (h *AboutHandler) GetAbout(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetAbout(w http.ResponseWriter, r *http.Request) {
 	// handle about
 	aboutComponent := templ.About()
 	err := templ.Layout(aboutComponent, "About", false).Render(r.Context(), w)

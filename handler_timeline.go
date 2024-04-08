@@ -1,24 +1,19 @@
-package handler
+package main
 
 import (
 	"fmt"
-	"htmxx/service"
 	"htmxx/templ"
 	"net/http"
 	"strconv"
 )
 
-type TimelineHandler struct {
-	timelineService service.TimelineService
-}
-
-func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetTimeline(w http.ResponseWriter, r *http.Request) {
 	var user = r.Context().Value("user").(string)
 	minid, iderr := strconv.ParseInt(r.PathValue("minid"), 10, 64)
 	if iderr != nil {
 		minid = 9223372036854775807
 	}
-	timeline, err := h.timelineService.GetTimeline(minid, r.Context())
+	timeline, err := h.GetTimelineData(minid, r.Context())
 	if err != nil {
 		// handle error
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
@@ -34,7 +29,7 @@ func (h *TimelineHandler) GetTimeline(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetUserTimeline(w http.ResponseWriter, r *http.Request) {
 	requster := r.Context().Value("user").(string)
 	author := r.PathValue("author")
 	minid, err := strconv.ParseInt(r.PathValue("minid"), 10, 64)
@@ -42,7 +37,7 @@ func (h *TimelineHandler) GetUserTimeline(w http.ResponseWriter, r *http.Request
 		minid = 9223372036854775807
 	}
 
-	timeline, err := h.timelineService.GetUserTimeline(author, minid, r.Context())
+	timeline, err := h.GetUserTimelineData(author, minid, r.Context())
 	if err != nil {
 		// handle error
 		http.Error(w, "Error: %v", http.StatusInternalServerError)

@@ -31,8 +31,9 @@ WHERE tweets.tweet_id = ?
 LIMIT 1;
 
 -- name: GetLikedTweets :many
-SELECT sqlc.embed(tweets), bookmarks.username IS NOT NULL AS bookmarkedByUser
+SELECT sqlc.embed(tweets), likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
+LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.tweet_id IN (SELECT tweet_id FROM likes WHERE likes.username = ?);
 
@@ -47,10 +48,11 @@ INSERT INTO tweets (author, content)
 VALUES (?, ?)
 RETURNING tweet_id;
 
--- name: DeleteTweet :exec
+-- name: DeleteTweet :one
 DELETE FROM tweets
 WHERE tweet_id = ?
-AND author = ?;
+AND author = ?
+RETURNING *;
 
 -- name: LikeTweet :exec
 INSERT INTO likes (username, tweet_id)

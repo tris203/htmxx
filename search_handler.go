@@ -1,17 +1,12 @@
-package handler
+package main
 
 import (
 	"fmt"
 	"htmxx/db"
 	"htmxx/model"
-	"htmxx/service"
 	"htmxx/templ"
 	"net/http"
 )
-
-type SearchHandler struct {
-	dbService   service.DBService
-}
 
 func shapeDBTweets(tweets []db.Tweet) []*model.Tweet {
 	// TODO: details around bools, although this is a search handler so it might be fine here due to compct rendering
@@ -27,7 +22,7 @@ func shapeDBTweets(tweets []db.Tweet) []*model.Tweet {
 	return shapedTweets
 }
 
-func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
+func (h *application) Search(w http.ResponseWriter, r *http.Request) {
 
 	searchTerm := r.FormValue("search")
 
@@ -37,13 +32,8 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	queries, dbConn, dberr := h.dbService.Connect()
-	if dberr != nil {
-		return
-	}
-	defer dbConn.Close()
 
-	searchResults, err := queries.SearchTweets(r.Context(), fmt.Sprintf("%%%s%%", searchTerm))
+	searchResults, err := h.query.SearchTweets(r.Context(), fmt.Sprintf("%%%s%%", searchTerm))
 
 	if len(searchResults) == 0 {
 		noResultsComponent := templ.NoResults(searchTerm)
@@ -62,7 +52,7 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *SearchHandler) GetSearch(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetSearch(w http.ResponseWriter, r *http.Request) {
 
 	rerr := templ.Layout(templ.SearchForm(), "Search", true).Render(r.Context(), w)
 

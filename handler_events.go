@@ -1,18 +1,12 @@
-package handler
+package main
 
 import (
 	"fmt"
-	"htmxx/service"
-	// "math/rand"
 	"net/http"
-	// "time"
+	"htmxx/service"
 )
 
-type SSEEventsHandler struct {
-	eventsService service.EventsService
-}
-
-func (h *SSEEventsHandler) EventsHandler(w http.ResponseWriter, r *http.Request) {
+func (h *application) EventsHandler(w http.ResponseWriter, r *http.Request) {
 	// handle SSE events
 	fmt.Println("Client Connected")
 	w.Header().Set("Content-Type", "text/event-stream")

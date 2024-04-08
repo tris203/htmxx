@@ -1,18 +1,12 @@
-package handler
+package main
 
 import (
 	"htmxx/db"
-	"htmxx/service"
 	"htmxx/templ"
 	"htmxx/model"
 	"net/http"
 	"strconv"
 )
-
-type BookmarkHandler struct {
-	tweetService service.TweetService
-	dbService   service.DBService
-}
 
 
 func shapeDBBookmarkedTweets(tweets []db.GetBookmarkedTweetsRow) []*model.Tweet {
@@ -31,17 +25,10 @@ func shapeDBBookmarkedTweets(tweets []db.GetBookmarkedTweetsRow) []*model.Tweet 
 return shapedTweets
 }
 
-func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetBookmark(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(string)
 
-
-	queries, dbConn, dberr := h.dbService.Connect()
-	if dberr != nil {
-		return
-	}
-	defer dbConn.Close()
-
-	bookmarks, err := queries.GetBookmarkedTweets(r.Context(), db.GetBookmarkedTweetsParams{Username: user, Username_2: user})
+	bookmarks, err := h.query.GetBookmarkedTweets(r.Context(), db.GetBookmarkedTweetsParams{Username: user, Username_2: user})
 	if err != nil {
 		// handle error
 		http.Error(w, "User not found", http.StatusNotFound)
@@ -52,7 +39,7 @@ func (h *BookmarkHandler) GetBookmark(w http.ResponseWriter, r *http.Request) {
 	templ.Layout(bookmarksComponent, "Bookmarks", false).Render(r.Context(), w)
 }
 
-func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
+func (h *application) AddBookmark(w http.ResponseWriter, r *http.Request) {
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {
@@ -60,7 +47,7 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := h.tweetService.AddBookmark(tweetID, r.Context())
+	result, err := h.AddBookmarkData(tweetID, r.Context())
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -71,7 +58,7 @@ func (h *BookmarkHandler) AddBookmark(w http.ResponseWriter, r *http.Request) {
 	bookmarkComponent.Render(r.Context(), w)
 }
 
-func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request) {
+func (h *application) RemoveBookmark(w http.ResponseWriter, r *http.Request) {
 	tweetID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
 	if err != nil {
@@ -79,7 +66,7 @@ func (h *BookmarkHandler) RemoveBookmark(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	result, err := h.tweetService.RemoveBookmark(tweetID, r.Context())
+	result, err := h.RemoveBookmarkData(tweetID, r.Context())
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

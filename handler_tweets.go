@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"bytes"
@@ -12,19 +12,14 @@ import (
 	"time"
 )
 
-type TweetHandler struct {
-	tweetService  service.TweetService
-	eventsService service.EventsService
-}
-
-func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetTweet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, "Invalid tweet ID", http.StatusBadRequest)
 		return
 	}
-	tweet, err := h.tweetService.GetTweet(id, r.Context())
+	tweet, err := h.GetTweetData(id, r.Context())
 	if err != nil {
 		// handle error
 		fmt.Println(err)
@@ -39,7 +34,7 @@ func (h *TweetHandler) GetTweet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
+func (h *application) CreateTweet(w http.ResponseWriter, r *http.Request) {
 	var content = r.FormValue("content")
 	// envrypt the ip
 	author := r.Context().Value("user").(string)
@@ -49,7 +44,7 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 		Content: content,
 	}
 
-	newid, err := h.tweetService.CreateTweet(tweet, r.Context())
+	newid, err := h.CreateTweetData(tweet, r.Context())
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -69,14 +64,14 @@ func (h *TweetHandler) CreateTweet(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
+func (h *application) AddLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	newLikeCount, likedBySelf, err := h.tweetService.AddLike(id, r.Context())
+	newLikeCount, likedBySelf, err := h.AddLikeData(id, r.Context())
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -89,14 +84,14 @@ func (h *TweetHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 	heartComponent.Render(r.Context(), w)
 }
 
-func (h *TweetHandler) RemoveLike(w http.ResponseWriter, r *http.Request) {
+func (h *application) RemoveLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	newLikeCount, likedBySelf, err := h.tweetService.RemoveLike(id, r.Context())
+	newLikeCount, likedBySelf, err := h.RemoveLikeData(id, r.Context())
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -108,15 +103,15 @@ func (h *TweetHandler) RemoveLike(w http.ResponseWriter, r *http.Request) {
 	heartComponent.Render(r.Context(), w)
 }
 
-func (h *TweetHandler) DeleteTweet(w http.ResponseWriter, r *http.Request) {
+func (h *application) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		// handle error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	deletedID, err := h.tweetService.DeleteTweet(id, r.Context()) 
-	if err != nil {
+	deletedID, err := h.DeleteTweetData(id, r.Context()) 
+	if err != nil || deletedID == 0 {
 		// handle error
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return

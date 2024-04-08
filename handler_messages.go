@@ -1,14 +1,11 @@
-package handler
+package main
 
 import (
 	"htmxx/templ"
 	"net/http"
 )
 
-type MessagesHandler struct {
-}
-
-func (h *MessagesHandler) GetMessages(w http.ResponseWriter, r *http.Request) {
+func (h *application) GetMessages(w http.ResponseWriter, r *http.Request) {
 	// handle messages
 	messagesComponent := templ.Messages()
 	err := templ.Layout(messagesComponent, "Messages", false).Render(r.Context(), w)
