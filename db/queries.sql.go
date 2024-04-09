@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const addTweet = `-- name: AddTweet :one
@@ -46,7 +47,7 @@ const deleteTweet = `-- name: DeleteTweet :one
 DELETE FROM tweets
 WHERE tweet_id = ?
 AND author = ?
-RETURNING tweet_id, author, content, created, like_count
+RETURNING tweet_id, author, content, created, like_count, parent_tweet_id
 `
 
 type DeleteTweetParams struct {
@@ -63,16 +64,18 @@ func (q *Queries) DeleteTweet(ctx context.Context, arg DeleteTweetParams) (Tweet
 		&i.Content,
 		&i.Created,
 		&i.LikeCount,
+		&i.ParentTweetID,
 	)
 	return i, err
 }
 
 const getAllTimeline = `-- name: GetAllTimeline :many
-SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, tweets.parent_tweet_id, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.tweet_id <= ?
+AND tweets.parent_tweet_id IS NULL
 ORDER BY tweets.tweet_id DESC
 LIMIT 10
 `
@@ -104,6 +107,7 @@ func (q *Queries) GetAllTimeline(ctx context.Context, arg GetAllTimelineParams) 
 			&i.Tweet.Content,
 			&i.Tweet.Created,
 			&i.Tweet.LikeCount,
+			&i.Tweet.ParentTweetID,
 			&i.Likedbyuser,
 			&i.Bookmarkedbyuser,
 		); err != nil {
@@ -121,7 +125,7 @@ func (q *Queries) GetAllTimeline(ctx context.Context, arg GetAllTimelineParams) 
 }
 
 const getBookmarkedTweets = `-- name: GetBookmarkedTweets :many
-SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, tweets.parent_tweet_id, likes.username IS NOT NULL AS likedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 WHERE tweets.tweet_id IN (SELECT tweet_id FROM bookmarks WHERE bookmarks.username = ?)
@@ -152,6 +156,7 @@ func (q *Queries) GetBookmarkedTweets(ctx context.Context, arg GetBookmarkedTwee
 			&i.Tweet.Content,
 			&i.Tweet.Created,
 			&i.Tweet.LikeCount,
+			&i.Tweet.ParentTweetID,
 			&i.Likedbyuser,
 		); err != nil {
 			return nil, err
@@ -180,7 +185,7 @@ func (q *Queries) GetLikeCount(ctx context.Context, tweetID int64) (int64, error
 }
 
 const getLikedTweets = `-- name: GetLikedTweets :many
-SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, tweets.parent_tweet_id, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
@@ -214,6 +219,7 @@ func (q *Queries) GetLikedTweets(ctx context.Context, arg GetLikedTweetsParams) 
 			&i.Tweet.Content,
 			&i.Tweet.Created,
 			&i.Tweet.LikeCount,
+			&i.Tweet.ParentTweetID,
 			&i.Likedbyuser,
 			&i.Bookmarkedbyuser,
 		); err != nil {
@@ -231,12 +237,13 @@ func (q *Queries) GetLikedTweets(ctx context.Context, arg GetLikedTweetsParams) 
 }
 
 const getTimeline = `-- name: GetTimeline :many
-SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, tweets.parent_tweet_id, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.author LIKE ?
 AND tweets.tweet_id <= ?
+AND tweets.parent_tweet_id IS NULL
 ORDER BY tweets.tweet_id DESC
 LIMIT 10
 `
@@ -274,6 +281,7 @@ func (q *Queries) GetTimeline(ctx context.Context, arg GetTimelineParams) ([]Get
 			&i.Tweet.Content,
 			&i.Tweet.Created,
 			&i.Tweet.LikeCount,
+			&i.Tweet.ParentTweetID,
 			&i.Likedbyuser,
 			&i.Bookmarkedbyuser,
 		); err != nil {
@@ -290,19 +298,20 @@ func (q *Queries) GetTimeline(ctx context.Context, arg GetTimelineParams) ([]Get
 	return items, nil
 }
 
-const getTweet = `-- name: GetTweet :one
-SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
+const getTweet = `-- name: GetTweet :many
+SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.like_count, tweets.parent_tweet_id, likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.tweet_id = ?
-LIMIT 1
+OR tweets.parent_tweet_id = ?
 `
 
 type GetTweetParams struct {
-	Username   string
-	Username_2 string
-	TweetID    int64
+	Username      string
+	Username_2    string
+	TweetID       int64
+	ParentTweetID sql.NullInt64
 }
 
 type GetTweetRow struct {
@@ -311,19 +320,41 @@ type GetTweetRow struct {
 	Bookmarkedbyuser bool
 }
 
-func (q *Queries) GetTweet(ctx context.Context, arg GetTweetParams) (GetTweetRow, error) {
-	row := q.db.QueryRowContext(ctx, getTweet, arg.Username, arg.Username_2, arg.TweetID)
-	var i GetTweetRow
-	err := row.Scan(
-		&i.Tweet.TweetID,
-		&i.Tweet.Author,
-		&i.Tweet.Content,
-		&i.Tweet.Created,
-		&i.Tweet.LikeCount,
-		&i.Likedbyuser,
-		&i.Bookmarkedbyuser,
+func (q *Queries) GetTweet(ctx context.Context, arg GetTweetParams) ([]GetTweetRow, error) {
+	rows, err := q.db.QueryContext(ctx, getTweet,
+		arg.Username,
+		arg.Username_2,
+		arg.TweetID,
+		arg.ParentTweetID,
 	)
-	return i, err
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetTweetRow
+	for rows.Next() {
+		var i GetTweetRow
+		if err := rows.Scan(
+			&i.Tweet.TweetID,
+			&i.Tweet.Author,
+			&i.Tweet.Content,
+			&i.Tweet.Created,
+			&i.Tweet.LikeCount,
+			&i.Tweet.ParentTweetID,
+			&i.Likedbyuser,
+			&i.Bookmarkedbyuser,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getTweetLikers = `-- name: GetTweetLikers :many
@@ -369,8 +400,27 @@ func (q *Queries) LikeTweet(ctx context.Context, arg LikeTweetParams) error {
 	return err
 }
 
+const replyTweet = `-- name: ReplyTweet :one
+INSERT INTO tweets (author, content, parent_tweet_id)
+VALUES (?, ?, ?)
+RETURNING tweet_id
+`
+
+type ReplyTweetParams struct {
+	Author        string
+	Content       string
+	ParentTweetID sql.NullInt64
+}
+
+func (q *Queries) ReplyTweet(ctx context.Context, arg ReplyTweetParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, replyTweet, arg.Author, arg.Content, arg.ParentTweetID)
+	var tweet_id int64
+	err := row.Scan(&tweet_id)
+	return tweet_id, err
+}
+
 const searchTweets = `-- name: SearchTweets :many
-SELECT tweet_id, author, content, created, like_count FROM tweets
+SELECT tweet_id, author, content, created, like_count, parent_tweet_id FROM tweets
 WHERE content LIKE ?
 ORDER BY created DESC
 `
@@ -390,6 +440,7 @@ func (q *Queries) SearchTweets(ctx context.Context, content string) ([]Tweet, er
 			&i.Content,
 			&i.Created,
 			&i.LikeCount,
+			&i.ParentTweetID,
 		); err != nil {
 			return nil, err
 		}

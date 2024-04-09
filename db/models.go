@@ -19,9 +19,10 @@ type Like struct {
 }
 
 type Tweet struct {
-	TweetID   int64
-	Author    string
-	Content   string
-	Created   sql.NullTime
-	LikeCount int64
+	TweetID       int64
+	Author        string
+	Content       string
+	Created       sql.NullTime
+	LikeCount     int64
+	ParentTweetID sql.NullInt64
 }

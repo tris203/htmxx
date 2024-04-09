@@ -2,22 +2,27 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"htmxx/db"
 	"htmxx/model"
 )
 
-func shapeDBTweet(tweet db.GetTweetRow) *model.Tweet {
-	return &model.Tweet{
-		ID:               tweet.Tweet.TweetID,
-		Author:           tweet.Tweet.Author,
-		Content:          tweet.Tweet.Content,
-		Created:          tweet.Tweet.Created.Time,
-		LikeCount:        tweet.Tweet.LikeCount,
-		LikedBySelf:      tweet.Likedbyuser,
-		BookmarkedBySelf: tweet.Bookmarkedbyuser,
-	}
+func shapeDBTweet(tweet []db.GetTweetRow) []*model.Tweet {
+	var shapeTweet []*model.Tweet
 
+	for _, t := range tweet {
+		shapeTweet = append(shapeTweet, &model.Tweet{
+			ID:               t.Tweet.TweetID,
+			Author:           t.Tweet.Author,
+			Content:          t.Tweet.Content,
+			Created:          t.Tweet.Created.Time,
+			LikeCount:        t.Tweet.LikeCount,
+			LikedBySelf:      t.Likedbyuser,
+			BookmarkedBySelf: t.Bookmarkedbyuser,
+		})
+	}
+	return shapeTweet
 }
 
 func (s *application) CreateTweetData(tweet *model.Tweet, ctx context.Context) (newid int64, error error) {
@@ -29,11 +34,14 @@ func (s *application) CreateTweetData(tweet *model.Tweet, ctx context.Context) (
 	return newid, nil
 }
 
-func (s *application) GetTweetData(id int64, ctx context.Context) (*model.Tweet, error) {
+func (s *application) GetTweetData(id int64, ctx context.Context) ([]*model.Tweet, error) {
 
 	userid := ctx.Value("user").(string)
 
-	tweet, err := s.query.GetTweet(ctx, db.GetTweetParams{TweetID: id, Username: userid, Username_2: userid})
+	tweet, err := s.query.GetTweet(ctx, db.GetTweetParams{TweetID: id, Username: userid, Username_2: userid, ParentTweetID: sql.NullInt64{Int64: id, Valid: true}})
+
+	fmt.Println(tweet)
+	fmt.Println(len(tweet))
 
 	if err != nil {
 		return nil, err
@@ -71,7 +79,7 @@ func (s *application) DeleteTweetData(id int64, ctx context.Context) (deletedid 
 	if err != nil {
 		return 0, fmt.Errorf("You are not authorized to delete this tweet")
 	}
-	 if tweet.TweetID == 0 {
+	if tweet.TweetID == 0 {
 		return 0, fmt.Errorf("You are not authorized to delete this tweet")
 	}
 	return tweet.TweetID, nil
@@ -97,4 +105,15 @@ func (s *application) RemoveBookmarkData(id int64, ctx context.Context) (bookmar
 		return true, bookmarkErr
 	}
 	return false, nil
+}
+
+func (s *application) ReplyTweetData(id int64, content string, ctx context.Context) (newid int64, error error) {
+	userid := ctx.Value("user").(string)
+
+	newid, err := s.query.ReplyTweet(ctx, db.ReplyTweetParams{Author: userid, Content: content, ParentTweetID: sql.NullInt64{Int64: id, Valid: true}})
+
+	if err != nil {
+		return 0, err
+	}
+	return newid, nil
 }

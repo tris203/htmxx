@@ -31,6 +31,7 @@ templ likes(tweet *model.Tweet) {
 	</button>
 	<button
 		class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1"
+		x-on:click={ fmt.Sprintf("createreply%d = !createreply%d", tweet.ID, tweet.ID) }
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -128,6 +129,7 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 	<div
 		id={ getIDName("tweet", tweet.ID) }
 		class="border border-gray-200 rounded-lg p-4 htmx-added:opacity-0 opacity-100 transition-opacity duration-500"
+		x-data={ fmt.Sprintf("{ createreply%d: false }", tweet.ID) }
 	>
 		<div class="flex items-start p-4 space-x-2">
 			<span class="relative flex shrink-0 overflow-hidden rounded-full w-12 h-12">
@@ -181,6 +183,7 @@ templ Tweet(tweet *model.Tweet, compact bool) {
 				}
 			</div>
 		</div>
+		@CreateNewReply(tweet.ID)
 	</div>
 }
 
@@ -225,12 +228,15 @@ templ Heart(id int64, likedBySelf bool, likecount int64, oob bool) {
 	</button>
 }
 
-templ IndivTweet(tweet *model.Tweet, currentUser string) {
-	@TopBar(tweet.Author, "Tweet")
+templ IndivTweet(tweet []*model.Tweet, currentUser string) {
+	@TopBar(tweet[0].Author, "Tweet")
 	<div id="timeline" class="grid grid-cols-1 gap-2"
 	x-data={ fmt.Sprintf("{ currentUser: '%s' }", currentUser) }
 	>
-		@Tweet(tweet, false)
+	for _, tweetq := range tweet {
+ 
+		@Tweet(tweetq, false)
+		}
 	</div>
 }
 

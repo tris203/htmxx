@@ -29,6 +29,7 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("DELETE /bookmark/{id}/", app.RemoveBookmark)
 	mux.HandleFunc("GET /page/{minid}/", app.GetTimeline)
 	mux.HandleFunc("GET /page/{author}/{minid}/", app.GetUserTimeline)
+	mux.HandleFunc("POST /tweet/{id}/", app.ReplyTweet)
 
 	return mux
 }

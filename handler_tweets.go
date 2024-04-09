@@ -121,3 +121,32 @@ func (h *application) DeleteTweet(w http.ResponseWriter, r *http.Request) {
 	deleteTweetComponent.Render(r.Context(), w)
 
 }
+
+func (h *application) ReplyTweet(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		// handle error
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	content := r.FormValue("content")
+
+	tweetid, err := h.ReplyTweetData(id, content, r.Context()) // handle success
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tweet, err := h.GetTweetData(tweetid, r.Context())
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	
+
+	newTweetComponent := templ.Tweet(tweet[0], true)
+	newTweetComponent.Render(r.Context(), w)
+	http.Error(w, "", http.StatusCreated)
+}

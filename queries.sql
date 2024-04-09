@@ -5,6 +5,7 @@ LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.author LIKE ?
 AND tweets.tweet_id <= ?
+AND tweets.parent_tweet_id IS NULL
 ORDER BY tweets.tweet_id DESC
 LIMIT 10;
 
@@ -15,6 +16,7 @@ FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.tweet_id <= ?
+AND tweets.parent_tweet_id IS NULL
 ORDER BY tweets.tweet_id DESC
 LIMIT 10;
 
@@ -22,13 +24,13 @@ LIMIT 10;
 SELECT username FROM likes
 WHERE tweet_id = ?;
 
--- name: GetTweet :one
+-- name: GetTweet :many
 SELECT sqlc.embed(tweets), likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.tweet_id = ?
-LIMIT 1;
+OR tweets.parent_tweet_id = ?;
 
 -- name: GetLikedTweets :many
 SELECT sqlc.embed(tweets), likes.username IS NOT NULL AS likedByUser, bookmarks.username IS NOT NULL AS bookmarkedByUser
@@ -79,4 +81,9 @@ AND tweet_id = ?;
 -- name: SearchTweets :many
 SELECT * FROM tweets
 WHERE content LIKE ?
-ORDER BY created DESC
+ORDER BY created DESC;
+
+-- name: ReplyTweet :one
+INSERT INTO tweets (author, content, parent_tweet_id)
+VALUES (?, ?, ?)
+RETURNING tweet_id;

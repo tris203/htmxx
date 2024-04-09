@@ -1,4 +1,5 @@
-<button class=\"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\"><path d=\"m17 2 4 4-4 4\"></path> <path d=\"M3 11v-1a4 4 0 0 1 4-4h14\"></path> <path d=\"m7 22-4-4 4-4\"></path> <path d=\"M21 13v1a4 4 0 0 1-4 4H3\"></path></svg> <span id=\"retweet-button-text\" class=\"hidden md:inline\">Retweet</span></button> <button class=\"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\"><path d=\"m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z\"></path></svg> <span id=\"reply-button-text\" class=\"hidden md:inline\">Reply</span></button>
+<button class=\"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\"><path d=\"m17 2 4 4-4 4\"></path> <path d=\"M3 11v-1a4 4 0 0 1 4-4h14\"></path> <path d=\"m7 22-4-4 4-4\"></path> <path d=\"M21 13v1a4 4 0 0 1-4 4H3\"></path></svg> <span id=\"retweet-button-text\" class=\"hidden md:inline\">Retweet</span></button> <button class=\"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1\" x-on:click=\"
+\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\"><path d=\"m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z\"></path></svg> <span id=\"reply-button-text\" class=\"hidden md:inline\">Reply</span></button>
 <button id=\"
 \" x-show=\"
 \" x-cloak hx-delete=\"
@@ -13,7 +14,8 @@
 \" x-on:click=\"bookmarked = !bookmarked\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"w-4 h-4\" :class=\"bookmarked ? &#39;w-4 h-4 fill-black&#39; : &#39;w-4 h-4&#39;\"><path d=\"M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z\"></path></svg> <span id=\"
 \" class=\"hidden md:inline\" x-text=\"bookmarked ? &#39;Bookmarked&#39; : &#39;Bookmark&#39;\">Bookmark</span></button>
 <div id=\"
-\" class=\"border border-gray-200 rounded-lg p-4 htmx-added:opacity-0 opacity-100 transition-opacity duration-500\"><div class=\"flex items-start p-4 space-x-2\"><span class=\"relative flex shrink-0 overflow-hidden rounded-full w-12 h-12\"><a href=\"
+\" class=\"border border-gray-200 rounded-lg p-4 htmx-added:opacity-0 opacity-100 transition-opacity duration-500\" x-data=\"
+\"><div class=\"flex items-start p-4 space-x-2\"><span class=\"relative flex shrink-0 overflow-hidden rounded-full w-12 h-12\"><a href=\"
 \"><img class=\"aspect-square h-full w-full\" alt=\"username\" src=\"/static/placeholder-user.jpg\"></a></span><div class=\"flex-col flex-1\"><div class=\"grid gap 1.5 text-sm\"><div class=\"flex-col w-full items-center gap-1.5\"><div id=\"
 \"><a href=\"
 \"><span class=\"font-medium\">
@@ -27,7 +29,8 @@
 </div></div>
 <div class=\"grid gap-1.5 text-sm\"><div class=\"flex items-center gap-4 text-xs\">
 </div></div>
-</div></div></div>
+</div></div>
+</div>
 <button hx-ext=\"back-to-the-future\" id=\"
 \" class=\"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-1\"
  hx-delete=\"

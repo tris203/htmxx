@@ -10,4 +10,5 @@ type Tweet struct {
 	LikeCount int64
 	LikedBySelf bool
 	BookmarkedBySelf bool
+	ParentID int64
 }
