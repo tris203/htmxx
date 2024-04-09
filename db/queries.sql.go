@@ -72,7 +72,7 @@ SELECT tweets.tweet_id, tweets.author, tweets.content, tweets.created, tweets.li
 FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
-WHERE tweets.tweet_id < ?
+WHERE tweets.tweet_id <= ?
 ORDER BY tweets.tweet_id DESC
 LIMIT 10
 `
@@ -236,7 +236,7 @@ FROM tweets
 LEFT JOIN likes ON likes.username = ? AND tweets.tweet_id = likes.tweet_id
 LEFT JOIN bookmarks ON bookmarks.username = ? AND tweets.tweet_id = bookmarks.tweet_id
 WHERE tweets.author LIKE ?
-AND tweets.tweet_id < ?
+AND tweets.tweet_id <= ?
 ORDER BY tweets.tweet_id DESC
 LIMIT 10
 `

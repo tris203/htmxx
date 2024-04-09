@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -7,7 +6,7 @@ import (
 
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
-	
+
 	staticFS := http.FileServer(http.Dir("./static"))
 	mux.HandleFunc("GET /{author}/", app.GetUserTimeline)
 	mux.Handle("GET /static/", http.StripPrefix("/static", staticFS))
@@ -28,8 +27,8 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /bookmarks/", app.GetBookmark)
 	mux.HandleFunc("POST /bookmark/{id}/", app.AddBookmark)
 	mux.HandleFunc("DELETE /bookmark/{id}/", app.RemoveBookmark)
-
-
+	mux.HandleFunc("GET /page/{minid}/", app.GetTimeline)
+	mux.HandleFunc("GET /page/{author}/{minid}/", app.GetUserTimeline)
 
 	return mux
 }
